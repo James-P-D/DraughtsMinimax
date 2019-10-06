@@ -30,6 +30,9 @@ void DrawBoard()
   {
     for(int y=0; y<Board.BOARD_HEIGHT; y++)
     {
+      stroke(0);
+      strokeWeight(0);
+
       if(counter % 2 == 0)
       {
         DrawWhiteSquare(x, y);
@@ -41,10 +44,14 @@ void DrawBoard()
       counter++;      
       
       boolean mouseOver = false;
-      if((mouseX > (BOARD_LEFT_MARGIN + (x * CELL_WIDTH))) && (mouseX < (BOARD_LEFT_MARGIN + ((x + 1) * CELL_WIDTH))) && (mouseY > (BOARD_TOP_MARGIN + (y * CELL_HEIGHT))) && (mouseY < (BOARD_TOP_MARGIN + ((Y + 1) * CELL_HEIGHT))))
+      if(
+        (mouseX > (BOARD_LEFT_MARGIN + (x * CELL_WIDTH))) && 
+        (mouseX < (BOARD_LEFT_MARGIN + ((x + 1) * CELL_WIDTH))) && 
+        (mouseY > (BOARD_TOP_MARGIN + (y * CELL_HEIGHT))) && 
+        (mouseY < (BOARD_TOP_MARGIN + ((y + 1) * CELL_HEIGHT))))
       {         //<>//
-        stroke(153);
-        strokeWeight(1);        
+        stroke(255, 0, 0);
+        strokeWeight(3);        
       } else {
         stroke(0);
         strokeWeight(0);

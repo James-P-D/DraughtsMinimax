@@ -101,16 +101,16 @@ void DrawBoard()
       switch(board.pieces[x][y])
       {
         case Board.COMPUTER_MAN:
-          this.DrawComputerMan(x,y);
+          this.DrawComputerMan(x, y);
           break;
         case Board.HUMAN_MAN:
-          this.DrawHumanMan(x,y);
+          this.DrawHumanMan(x, y);
           break;
         case Board.COMPUTER_KING:
-          this.DrawComputerKing(x,y);
+          this.DrawComputerKing(x, y);
           break;
         case Board.HUMAN_KING:
-          this.DrawHumanKing(x,y);
+          this.DrawHumanKing(x, y);
           break;
       }
       

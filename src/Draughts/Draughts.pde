@@ -8,13 +8,24 @@ static final int BOARD_LEFT_MARGIN = 50;
 static final int BOARD_TOP_MARGIN = 50;
 static final int CELL_WIDTH = 80;
 static final int CELL_HEIGHT = 80;
-final color COMPUTER_MAN_COLOR = color(120, 120, 120);
-final color COMPUTER_KING_COLOR = color(90, 90, 90);
-final color HUMAN_MAN_COLOR = color(255, 255, 120);
-final color HUMAN_KING_COLOR = color(120, 120, 60);
 final color WHITE_COLOR = color(255, 255, 255);
 final color BLACK_COLOR = color(0, 0, 0);
+
 final color RED_COLOR = color(255, 0, 0);
+final color GREEN_COLOR = color(0, 255, 0);
+final color BLUE_COLOR = color(0, 0, 255);
+final color YELLOW_COLOR = color(255, 255, 0);
+final color PINK_COLOR = color(255, 0, 255);
+final color CYAN_COLOR = color(0, 255, 255);
+
+final color DARK_BLUE_COLOR = color(0, 0, 126);
+final color DARK_YELLOW_COLOR = color(126, 126, 0);
+
+final color COMPUTER_MAN_COLOR = BLUE_COLOR;
+final color COMPUTER_KING_COLOR = DARK_BLUE_COLOR;
+final color HUMAN_MAN_COLOR = YELLOW_COLOR;
+final color HUMAN_KING_COLOR = DARK_YELLOW_COLOR;
+
 
 /***********************************************************
  * Global Variables (yuck!)
@@ -64,9 +75,6 @@ void DrawBoard()
   {
     for(int y=0; y<Board.BOARD_HEIGHT; y++)
     {
-      stroke(BLACK_COLOR);
-      strokeWeight(0);
-
       if(counter % 2 == 0)
       {
         DrawWhiteSquare(x, y);
@@ -93,7 +101,17 @@ void DrawBoard()
         if((board.pieces[x][y] == Board.HUMAN_MAN) || (board.pieces[x][y] == Board.HUMAN_KING))
         {
           stroke(RED_COLOR);
-          strokeWeight(3);        
+          strokeWeight(3);
+          
+          if(board.pieces[x][y] == Board.HUMAN_MAN)
+          {
+            // Highlight two squares (plus current one)
+          }
+          
+          if(board.pieces[x][y] == Board.HUMAN_KING)
+          {
+            // Highlight four squares (plus current one)
+          }
         }
       }
       
@@ -158,6 +176,8 @@ void DrawHumanMan(int x, int y)
           BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4); 
+  stroke(BLACK_COLOR);
+  strokeWeight(0);
 }
 
 /***********************************************************
@@ -170,6 +190,8 @@ void DrawComputerMan(int x, int y)
           BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4);
+  stroke(BLACK_COLOR);
+  strokeWeight(0);
 }
 
 /***********************************************************
@@ -182,6 +204,8 @@ void DrawHumanKing(int x, int y)
           BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4); 
+  stroke(BLACK_COLOR);
+  strokeWeight(0);
   fill(HUMAN_KING_COLOR);
   ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
           BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
@@ -199,6 +223,8 @@ void DrawComputerKing(int x, int y)
           BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4);
+  stroke(BLACK_COLOR);
+  strokeWeight(0);
   fill(COMPUTER_KING_COLOR);
   ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
           BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),

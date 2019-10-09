@@ -71,17 +71,17 @@ void DrawBoard()
        CELL_HEIGHT * Board.BOARD_HEIGHT);
   
   int counter = 0;
-  for(int x=0; x<Board.BOARD_WIDTH; x++)
+  for(int column = 0; column < Board.BOARD_WIDTH; column++)
   {
-    for(int y=0; y<Board.BOARD_HEIGHT; y++)
+    for(int row = 0; row < Board.BOARD_HEIGHT; row++)
     {
       if(counter % 2 == 0)
       {
-        DrawWhiteSquare(x, y);
+        DrawWhiteSquare(column, row);
       }
       else
       {
-        DrawBlackSquare(x, y);
+        DrawBlackSquare(column, row);
       }
       counter++;      
 
@@ -91,24 +91,24 @@ void DrawBoard()
       boolean mouseOver = false;
       // Check if mouse is over the current square
       if(
-        (mouseX > (BOARD_LEFT_MARGIN + (x * CELL_WIDTH))) && 
-        (mouseX < (BOARD_LEFT_MARGIN + ((x + 1) * CELL_WIDTH))) && 
-        (mouseY > (BOARD_TOP_MARGIN + (y * CELL_HEIGHT))) && 
-        (mouseY < (BOARD_TOP_MARGIN + ((y + 1) * CELL_HEIGHT))))
+        (mouseX > (BOARD_LEFT_MARGIN + (column * CELL_WIDTH))) && 
+        (mouseX < (BOARD_LEFT_MARGIN + ((column + 1) * CELL_WIDTH))) && 
+        (mouseY > (BOARD_TOP_MARGIN + (row * CELL_HEIGHT))) && 
+        (mouseY < (BOARD_TOP_MARGIN + ((row + 1) * CELL_HEIGHT))))
       { //<>//
         // ..also check that current square contains a human piece, no point highlighting
         // the computer-pieces, since the human player cannot move them.
-        if((board.pieces[x][y] == Board.HUMAN_MAN) || (board.pieces[x][y] == Board.HUMAN_KING))
+        if((board.pieces[column][row] == Board.HUMAN_MAN) || (board.pieces[column][row] == Board.HUMAN_KING))
         {
           stroke(RED_COLOR);
           strokeWeight(3);
           
-          if(board.pieces[x][y] == Board.HUMAN_MAN)
+          if(board.pieces[column][row] == Board.HUMAN_MAN)
           {
             // Highlight two squares (plus current one)
           }
           
-          if(board.pieces[x][y] == Board.HUMAN_KING)
+          if(board.pieces[column][row] == Board.HUMAN_KING)
           {
             // Highlight four squares (plus current one)
           }
@@ -116,19 +116,19 @@ void DrawBoard()
       }
       
       // Draw the actual pieces
-      switch(board.pieces[x][y])
+      switch(board.pieces[column][row])
       {
         case Board.COMPUTER_MAN:
-          this.DrawComputerMan(x, y);
+          this.DrawComputerMan(column, row);
           break;
         case Board.HUMAN_MAN:
-          this.DrawHumanMan(x, y);
+          this.DrawHumanMan(column, row);
           break;
         case Board.COMPUTER_KING:
-          this.DrawComputerKing(x, y);
+          this.DrawComputerKing(column, row);
           break;
         case Board.HUMAN_KING:
-          this.DrawHumanKing(x, y);
+          this.DrawHumanKing(column, row);
           break;
       }
       
@@ -140,28 +140,28 @@ void DrawBoard()
 /***********************************************************
  * Draw Black Squares for Board
  ***********************************************************/
-void DrawBlackSquare(int x, int y)
+void DrawBlackSquare(int column, int row)
 {
   fill(BLACK_COLOR);
-  DrawSquare(x, y);
+  DrawSquare(column, row);
 }
 
 /***********************************************************
  * Draw White Squares for Board
  ***********************************************************/
-void DrawWhiteSquare(int x, int y)
+void DrawWhiteSquare(int column, int row)
 {
   fill(WHITE_COLOR);
-  DrawSquare(x, y);
+  DrawSquare(column, row);
 }
 
 /***********************************************************
  * Draw Square using current Color
  ***********************************************************/
-void DrawSquare(int x, int y) 
+void DrawSquare(int column, int row) 
 {
-  rect(BOARD_LEFT_MARGIN + (x * CELL_WIDTH),
-       BOARD_TOP_MARGIN + (y * CELL_HEIGHT),
+  rect(BOARD_LEFT_MARGIN + (column * CELL_WIDTH),
+       BOARD_TOP_MARGIN + (row * CELL_HEIGHT),
        CELL_WIDTH,
        CELL_HEIGHT);
 }
@@ -169,11 +169,11 @@ void DrawSquare(int x, int y)
 /***********************************************************
  * Draw normal piece for human player
  ***********************************************************/
-void DrawHumanMan(int x, int y)
+void DrawHumanMan(int column, int row)
 {
   fill(255, 255, 120);
-  ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
-          BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
+  ellipse(BOARD_LEFT_MARGIN + (column * CELL_WIDTH) + (CELL_WIDTH / 2),
+          BOARD_TOP_MARGIN + (row * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4); 
   stroke(BLACK_COLOR);
@@ -183,11 +183,11 @@ void DrawHumanMan(int x, int y)
 /***********************************************************
  * Draw normal piece for computer player
  ***********************************************************/
-void DrawComputerMan(int x, int y)
+void DrawComputerMan(int column, int row)
 {
   fill(COMPUTER_MAN_COLOR);
-  ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
-          BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
+  ellipse(BOARD_LEFT_MARGIN + (column * CELL_WIDTH) + (CELL_WIDTH / 2),
+          BOARD_TOP_MARGIN + (row * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4);
   stroke(BLACK_COLOR);
@@ -197,18 +197,18 @@ void DrawComputerMan(int x, int y)
 /***********************************************************
  * Dray king piece for human player
  ***********************************************************/
-void DrawHumanKing(int x, int y)
+void DrawHumanKing(int column, int row)
 {
   fill(HUMAN_MAN_COLOR);
-  ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
-          BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
+  ellipse(BOARD_LEFT_MARGIN + (column * CELL_WIDTH) + (CELL_WIDTH / 2),
+          BOARD_TOP_MARGIN + (row * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4); 
   stroke(BLACK_COLOR);
   strokeWeight(0);
   fill(HUMAN_KING_COLOR);
-  ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
-          BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
+  ellipse(BOARD_LEFT_MARGIN + (column * CELL_WIDTH) + (CELL_WIDTH / 2),
+          BOARD_TOP_MARGIN + (row * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 20,
           CELL_HEIGHT - 20);
 }
@@ -216,18 +216,18 @@ void DrawHumanKing(int x, int y)
 /***********************************************************
  * Draw king piece for computer player
  ***********************************************************/
-void DrawComputerKing(int x, int y)
+void DrawComputerKing(int column, int row)
 {
   fill(COMPUTER_MAN_COLOR);
-  ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
-          BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
+  ellipse(BOARD_LEFT_MARGIN + (column * CELL_WIDTH) + (CELL_WIDTH / 2),
+          BOARD_TOP_MARGIN + (row * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 4,
           CELL_HEIGHT - 4);
   stroke(BLACK_COLOR);
   strokeWeight(0);
   fill(COMPUTER_KING_COLOR);
-  ellipse(BOARD_LEFT_MARGIN + (x * CELL_WIDTH) + (CELL_WIDTH / 2),
-          BOARD_TOP_MARGIN + (y * CELL_HEIGHT) + (CELL_HEIGHT / 2),
+  ellipse(BOARD_LEFT_MARGIN + (column * CELL_WIDTH) + (CELL_WIDTH / 2),
+          BOARD_TOP_MARGIN + (row * CELL_HEIGHT) + (CELL_HEIGHT / 2),
           CELL_WIDTH - 20,
           CELL_HEIGHT - 20);
 }

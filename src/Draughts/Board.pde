@@ -18,32 +18,32 @@ class Board
     pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
     
     int counter=0; 
-    for(int x=0; x<Board.BOARD_WIDTH; x++)
+    for(int column = 0; column < Board.BOARD_WIDTH; column++)
     {    
-      for(int y=0; y<Board.BOARD_HEIGHT; y++)
+      for(int row = 0; row < Board.BOARD_HEIGHT; row++)
       {
         if(counter % 2 == 1)
         {
-          if(y<COMPUTER_ROWS)
+          if(row < COMPUTER_ROWS)
           {
-            this.pieces[x][y] = COMPUTER_MAN;
+            this.pieces[column][row] = COMPUTER_MAN;
           }
-          else if(y>= (BOARD_HEIGHT - HUMAN_ROWS))
+          else if(row >= (BOARD_HEIGHT - HUMAN_ROWS))
           {
-            this.pieces[x][y] = HUMAN_MAN;
+            this.pieces[column][row] = HUMAN_MAN;
           }
           else
           {
-            this.pieces[x][y] = EMPTY;
+            this.pieces[column][row] = EMPTY;
           }
         }
         else
         {
-          this.pieces[x][y] = EMPTY;
+          this.pieces[column][row] = EMPTY;
         }
         counter++;
         
-        print(pieces[x][y]);
+        print(pieces[column][row]);
       }
       print("\n");
       counter++;

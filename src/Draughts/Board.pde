@@ -1,10 +1,13 @@
 class Board 
 {
+  // 8x8 board
   static final int BOARD_WIDTH = 8;
   static final int BOARD_HEIGHT = 8;
+  // Players fill up first 3 rows
   static final int COMPUTER_ROWS = 3;
   static final int HUMAN_ROWS = 3;
   
+  // 'Enum's for pieces
   static final int COMPUTER_MAN = 0;
   static final int COMPUTER_KING = 1;
   static final int HUMAN_MAN = 2;
@@ -17,12 +20,11 @@ class Board
   {
     pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
     
-    int counter=0; 
     for(int column = 0; column < Board.BOARD_WIDTH; column++)
     {    
       for(int row = 0; row < Board.BOARD_HEIGHT; row++)
-      {
-        if(counter % 2 == 1)
+      {        
+        if((row + column) %2 == 1)
         {
           if(row < COMPUTER_ROWS)
           {
@@ -41,12 +43,10 @@ class Board
         {
           this.pieces[column][row] = EMPTY;
         }
-        counter++;
         
         print(pieces[column][row]);
       }
       print("\n");
-      counter++;
     }    
   }
 }

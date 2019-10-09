@@ -70,12 +70,11 @@ void DrawBoard()
        CELL_WIDTH * Board.BOARD_WIDTH,
        CELL_HEIGHT * Board.BOARD_HEIGHT);
   
-  int counter = 0;
   for(int column = 0; column < Board.BOARD_WIDTH; column++)
   {
     for(int row = 0; row < Board.BOARD_HEIGHT; row++)
     {
-      if(counter % 2 == 0)
+      if((row + column) % 2 == 0)
       {
         DrawWhiteSquare(column, row);
       }
@@ -83,8 +82,7 @@ void DrawBoard()
       {
         DrawBlackSquare(column, row);
       }
-      counter++;      
-
+  
       stroke(0);
       strokeWeight(0);
 
@@ -133,7 +131,6 @@ void DrawBoard()
       }
       
     }
-    counter++;
   }
 }
 

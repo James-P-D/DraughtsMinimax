@@ -3,6 +3,7 @@ class Board
   // 8x8 board
   static final int BOARD_WIDTH = 8;
   static final int BOARD_HEIGHT = 8;
+  
   // Players fill up first 3 rows
   static final int COMPUTER_ROWS = 3;
   static final int HUMAN_ROWS = 3;

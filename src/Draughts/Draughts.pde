@@ -35,6 +35,9 @@ final color HUMAN_KING_COLOR = DARK_YELLOW_COLOR;
  * Global Variables (yuck!)
  ***********************************************************/
 Board board;
+boolean humanTurn;
+int humanMovingPieceColumn;
+int humanMovingPieceRow;
 
 /***********************************************************
  * Setup. Set size, background, initialise global variables
@@ -44,7 +47,10 @@ void setup()
 {
   size(1200, 800);
   background(120, 120, 120);
-  board = new Board();  
+  this.board = new Board();
+  this.humanTurn = true;
+  this.humanMovingPieceColumn = -1;
+  this.humanMovingPieceRow = -1;  
 }
 
 /***********************************************************
@@ -87,6 +93,7 @@ void DrawBoard()
         DrawBlackSquare(column, row);
       }
 
+      /*
       boolean mouseOver = false;
       // Check if mouse is over the current square
       if(OverSquare(mouseX, mouseY, column, row))
@@ -108,25 +115,45 @@ void DrawBoard()
             // Highlight four squares (plus current one)
           }
         }
-      }
+      }*/
       
-      // Draw the actual pieces
-      switch(board.pieces[column][row])
+      if(!((column == this.humanMovingPieceColumn) && (row == this.humanMovingPieceRow)))
       {
-        case Board.COMPUTER_MAN:
-          this.DrawComputerManAtSquare(column, row);
-          break;
-        case Board.HUMAN_MAN:
-          this.DrawHumanManAtSquare(column, row);
-          break;
-        case Board.COMPUTER_KING:
-          this.DrawComputerKingAtSquare(column, row);
-          break;
-        case Board.HUMAN_KING:
-          this.DrawHumanKingAtSquare(column, row);
-          break;
+        // Draw the actual pieces
+        switch(board.pieces[column][row])
+        {
+          case Board.COMPUTER_MAN:
+            this.DrawComputerManAtSquare(column, row);
+            break;
+          case Board.HUMAN_MAN:
+            this.DrawHumanManAtSquare(column, row);
+            break;
+          case Board.COMPUTER_KING:
+            this.DrawComputerKingAtSquare(column, row);
+            break;
+          case Board.HUMAN_KING:
+            this.DrawHumanKingAtSquare(column, row);
+            break;
+        }
       }
-      
+    }
+  }
+  
+  if((this.humanMovingPieceColumn != -1) && (this.humanMovingPieceRow != -1))
+  {
+    int tempMouseX = max(mouseX, BOARD_LEFT_MARGIN + (CELL_WIDTH / 2));
+    int tempMouseY = max(mouseY, BOARD_TOP_MARGIN + (CELL_HEIGHT / 2));
+    tempMouseX = min(tempMouseX, BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH) - (CELL_WIDTH / 2));
+    tempMouseY = min(tempMouseY, BOARD_TOP_MARGIN + (CELL_HEIGHT * Board.BOARD_HEIGHT) - (CELL_HEIGHT / 2));
+    
+    switch(board.pieces[this.humanMovingPieceColumn][this.humanMovingPieceRow])
+    {
+      case Board.HUMAN_MAN:
+        this.DrawHumanManAtXY(tempMouseX, tempMouseY);
+        break;
+      case Board.HUMAN_KING:
+        this.DrawHumanKingAtXY(tempMouseX, tempMouseY);
+        break;
     }
   }
 }
@@ -141,6 +168,21 @@ boolean OverSquare(int x, int y, int column, int row)
 
 void mousePressed() 
 {
+  if(this.humanTurn) 
+  {
+    if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&
+       (mouseY > BOARD_TOP_MARGIN) && (mouseY < BOARD_TOP_MARGIN + (CELL_HEIGHT * Board.BOARD_HEIGHT)))
+    {
+      int column = (mouseX - BOARD_LEFT_MARGIN) / CELL_WIDTH;
+      int row = (mouseY - BOARD_TOP_MARGIN) / CELL_HEIGHT;
+      
+      if(board.IsHuman(column, row))
+      {
+        this.humanMovingPieceColumn = column;
+        this.humanMovingPieceRow = row;
+      }
+    }
+  }
 }
 
 void mouseDragged() 

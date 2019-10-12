@@ -9,12 +9,15 @@ class Board
   static final int HUMAN_ROWS = 3;
   
   // 'Enum's for pieces
-  static final int COMPUTER_MAN = 0;
-  static final int COMPUTER_KING = 1;
-  static final int HUMAN_MAN = 2;
-  static final int HUMAN_KING = 3;
-  static final int EMPTY = 4;
-
+  static final int EMPTY = 0;
+  static final int COMPUTER_MAN = 1;
+  static final int COMPUTER_KING = 2;
+  static final int HUMAN_MAN = 3;
+  static final int HUMAN_KING = 4;
+  
+  // Scores for pieces. Negative for human player, positive for 
+  // Computer. Values will be multiplied by Scalar if they are
+  // 'safe' (against a wall or proected by teammates)
   static final int HUMAN_MAN_SCORE = -100;
   static final int HUMAN_KING_SCORE = -200;
   static final int COMPUTER_MAN_SCORE = 100;
@@ -31,7 +34,7 @@ class Board
     {    
       for(int row = 0; row < Board.BOARD_HEIGHT; row++)
       {        
-        if((row + column) %2 == 1)
+        if((row + column) % 2 == 1)
         {
           if(row < COMPUTER_ROWS)
           {
@@ -57,10 +60,10 @@ class Board
     }    
   }
   
-  boolean IsSafe(int row, int column)
+  boolean IsSafe(int column, int row)
   {  
-    if((row == 0) || (row == BOARD_HEIGHT - 1) ||      // If piece is against either vertical side of board..
-       (column == 0) || (column == BOARD_WIDTH - 1))   // ..or against either the top or bottom of board..
+    if((column == 0) || (column == BOARD_WIDTH - 1) || // If piece is against either vertical side of board..
+       (row == 0) || (row == BOARD_HEIGHT - 1))        // ..or against either the top or bottom of board..
     { 
       return true;                                     // ..then the piece is inherently safe
     }
@@ -87,10 +90,10 @@ class Board
     // ...and do the same thing for Computer player
     if(IsComputer(column, row))
     {
-      if((IsComputer(column - 1, row - 1) && IsComputer(row - 1, column + 1)) || // Row above
-         (IsComputer(column - 1, row + 1) && IsComputer(row + 1, column + 1)) || // Row below
-         (IsComputer(column - 1, row - 1) && IsComputer(row + 1, column - 1)) || // Col left
-         (IsComputer(column + 1, row - 1) && IsComputer(row + 1, column + 1)))   // Col right
+      if((IsComputer(column - 1, row - 1) && IsComputer(column + 1, row - 1)) || // Row above
+         (IsComputer(column - 1, row + 1) && IsComputer(column + 1, row + 1)) || // Row below
+         (IsComputer(column - 1, row - 1) && IsComputer(column - 1, row + 1)) || // Col left
+         (IsComputer(column + 1, row - 1) && IsComputer(column + 1, row + 1)))   // Col right
       {
         return true;
       }
@@ -106,6 +109,11 @@ class Board
   boolean IsComputer(int column, int row)
   {
     return (this.pieces[column][row] == COMPUTER_MAN) || (this.pieces[column][row] == COMPUTER_KING);
+  }
+  
+  boolean IsEmpty(int column, int row)
+  {
+    return (this.pieces[column][row] == EMPTY);
   }
   
   int CalculateScore()

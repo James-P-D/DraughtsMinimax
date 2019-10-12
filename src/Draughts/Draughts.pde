@@ -93,7 +93,7 @@ void DrawBoard()
       { //<>//
         // ..also check that current square contains a human piece, no point highlighting
         // the computer-pieces, since the human player cannot move them.
-        if((board.pieces[column][row] == Board.HUMAN_MAN) || (board.pieces[column][row] == Board.HUMAN_KING))
+        if(board.IsHuman(column, row))
         {
           stroke(RED_COLOR);
           strokeWeight(3);

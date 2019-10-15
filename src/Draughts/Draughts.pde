@@ -4,8 +4,10 @@
 /***********************************************************
  * Constants
  ***********************************************************/
-static final int BOARD_LEFT_MARGIN = 50;
-static final int BOARD_TOP_MARGIN = 50;
+final int MAX_SEARCH_DEPTH = 6;
+
+static final int BOARD_LEFT_MARGIN = 75;
+static final int BOARD_TOP_MARGIN = 75;
 static final int CELL_WIDTH = 80;
 static final int CELL_HEIGHT = 80;
 static final int MAN_WIDTH = CELL_WIDTH - 4;
@@ -15,7 +17,7 @@ static final int KING_HEIGHT = CELL_HEIGHT - 20;
 
 final color WHITE_COLOR = color(255, 255, 255);
 final color BLACK_COLOR = color(0, 0, 0);
-
+final color GRAY_COLOR = color(120, 120, 120);
 final color RED_COLOR = color(255, 0, 0);
 final color GREEN_COLOR = color(0, 255, 0);
 final color BLUE_COLOR = color(0, 0, 255);
@@ -31,13 +33,22 @@ final color COMPUTER_KING_COLOR = DARK_BLUE_COLOR;
 final color HUMAN_MAN_COLOR = YELLOW_COLOR;
 final color HUMAN_KING_COLOR = DARK_YELLOW_COLOR;
 
+final String HUMAN_TURN_MESSAGE = "HUMAN TURN";
+final String COMPUTER_TURN_MESSAGE = "COMPUTER TURN";
+final String HUMAN_WINS = "HUMAN WINS!";
+final String COMPUTER_WINS = "COMPUTER WINS!";
+final String DRAW = "DRAW";
+
 /***********************************************************
  * Global Variables (yuck!)
  ***********************************************************/
 Board board;
+boolean humanGoesFirst;
 boolean humanTurn;
 int humanMovingPieceColumn;
 int humanMovingPieceRow;
+
+PossibleMovesCalculator possibleMovesCalculator;
 
 /***********************************************************
  * Setup. Set size, background, initialise global variables
@@ -46,11 +57,13 @@ int humanMovingPieceRow;
 void setup() 
 {
   size(1200, 800);
-  background(120, 120, 120);
+  background(GRAY_COLOR);
   this.board = new Board();
-  this.humanTurn = true;
+  
+  this.humanGoesFirst = true;
+  this.humanTurn = this.humanGoesFirst;
   this.humanMovingPieceColumn = -1;
-  this.humanMovingPieceRow = -1;  
+  this.humanMovingPieceRow = -1;
 }
 
 /***********************************************************
@@ -72,6 +85,8 @@ void draw()
  ***********************************************************/
 void DrawBoard()
 {
+  // Make the entire NxN board black to begin with, this way we don't need to actually draw the black
+  // squares since the spaces between the white squares will be black regardless.
   stroke(BLACK_COLOR);
   strokeWeight(0);
   fill(BLACK_COLOR);
@@ -80,43 +95,52 @@ void DrawBoard()
        CELL_WIDTH * Board.BOARD_WIDTH,
        CELL_HEIGHT * Board.BOARD_HEIGHT);
   
+  // First update the labels
+  if(this.humanTurn)
+  {
+    this.WriteLabel(HUMAN_TURN_MESSAGE);
+  }
+  else
+  {
+    this.WriteLabel(COMPUTER_TURN_MESSAGE);
+  }
+  
+  // Now loop through all the squares
   for(int column = 0; column < Board.BOARD_WIDTH; column++)
   {
     for(int row = 0; row < Board.BOARD_HEIGHT; row++)
     {
+      // Sum of Row and Column will be even for all White squares
       if((row + column) % 2 == 0)
       {
         DrawWhiteSquare(column, row);
       }
       else
       {
-        DrawBlackSquare(column, row);
-      }
-
-      /*
-      boolean mouseOver = false;
-      // Check if mouse is over the current square
-      if(OverSquare(mouseX, mouseY, column, row))
-      { //<>//
-        // ..also check that current square contains a human piece, no point highlighting
-        // the computer-pieces, since the human player cannot move them.
-        if(board.IsHuman(column, row))
+        // If it's the Human-turn, turn any possible-move square to red
+        if(this.humanTurn)
         {
-          stroke(RED_COLOR);
-          strokeWeight(3);
-          
-          if(board.pieces[column][row] == Board.HUMAN_MAN)
-          {
-            // Highlight two squares (plus current one)
-          }
-          
-          if(board.pieces[column][row] == Board.HUMAN_KING)
-          {
-            // Highlight four squares (plus current one)
+          if((humanMovingPieceColumn != -1) &&
+             (humanMovingPieceRow != -1))
+          {      
+            if(possibleMovesCalculator != null)
+            {
+              for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
+              {
+                if((possibleMovesCalculator.Moves.get(i).targetColumn == column) &&
+                   (possibleMovesCalculator.Moves.get(i).targetRow == row))
+                {
+                  DrawRedSquare(column, row);
+                  break;
+                }
+              }
+            }
           }
         }
-      }*/
+      }
       
+      // For the current Column and Row, if it isn't the currently moving Human piece, then just
+      // draw the relevent cirlce.
       if(!((column == this.humanMovingPieceColumn) && (row == this.humanMovingPieceRow)))
       {
         // Draw the actual pieces
@@ -136,9 +160,10 @@ void DrawBoard()
             break;
         }
       }
-    }
-  }
-  
+    } //<>//
+  } //<>//
+
+  // Finally, for the currently moving human piece, draw the item at the current mouse position
   if((this.humanMovingPieceColumn != -1) && (this.humanMovingPieceRow != -1))
   {
     int tempMouseX = max(mouseX, BOARD_LEFT_MARGIN + (CELL_WIDTH / 2));
@@ -156,14 +181,15 @@ void DrawBoard()
         break;
     }
   }
-}
-
-boolean OverSquare(int x, int y, int column, int row)
-{
-  return (x > (BOARD_LEFT_MARGIN + (column * CELL_WIDTH))) && 
-         (x < (BOARD_LEFT_MARGIN + ((column + 1) * CELL_WIDTH))) && 
-         (y > (BOARD_TOP_MARGIN + (row * CELL_HEIGHT))) && 
-         (y < (BOARD_TOP_MARGIN + ((row + 1) * CELL_HEIGHT)));
+  
+  // If it's no longer the human's turn, disable the drawing loop and calculate the Computer's
+  // best possible move
+  if(!humanTurn)
+  {
+    //computerProcsesing = true;
+    CalculateComputerMove();
+    noLoop();
+  }
 }
 
 void mousePressed() 
@@ -180,17 +206,81 @@ void mousePressed()
       {
         this.humanMovingPieceColumn = column;
         this.humanMovingPieceRow = row;
+        
+        possibleMovesCalculator = new PossibleMovesCalculator(board, column, row);
+        
+        for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
+        {
+          Move possibleMove = possibleMovesCalculator.Moves.get(i);
+          if(possibleMove instanceof StepMove)
+          {
+            print("Move: ");
+          } else {
+            print("Jump: ");
+          }
+          print(possibleMove.targetColumn);
+          print(", ");
+          print(possibleMove.targetRow);
+          print("\n");
+        }
       }
     }
   }
 }
 
-void mouseDragged() 
-{
+/***********************************************************
+ * Mouse Released Event. When the user stops pressing the mouse
+ * button, calculate the position of the mouse and see if it's
+ * a valid place to relocate the piece.
+ ***********************************************************/
+void mouseReleased()
+{  
+  if(this.humanTurn) 
+  {
+    if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&
+       (mouseY > BOARD_TOP_MARGIN) && (mouseY < BOARD_TOP_MARGIN + (CELL_HEIGHT * Board.BOARD_HEIGHT)))
+    {
+      int column = (mouseX - BOARD_LEFT_MARGIN) / CELL_WIDTH;
+      int row = (mouseY - BOARD_TOP_MARGIN) / CELL_HEIGHT;
+      
+      for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
+      {
+        Move possibleMove = possibleMovesCalculator.Moves.get(i);
+        if((column == possibleMove.targetColumn) && (row == possibleMove.targetRow))
+        {
+          board.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, possibleMove);
+                    
+          this.humanTurn = false;
+          break;
+        }
+      }
+    }
+  }
+  this.humanMovingPieceColumn = -1;
+  this.humanMovingPieceRow = -1;
 }
 
-void mouseReleased()
+/***********************************************************
+ * Calculate the best move for the Computer
+ ***********************************************************/
+void CalculateComputerMove()
 {
+  print("Start calculating\n");
+  MinimaxTree minimaxTree = new MinimaxTree(this.board);
+  print("Done calculating\n");
+  //this.computerProcsesing = false;
+}
+
+/***********************************************************
+ * Returns TRUE if x, y is over a particular cell
+ ***********************************************************/
+//TODO: DO we need this?!?!?!?!?!?!??!?!?!?!?!?!??!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!??!??!?!?!?
+boolean OverSquare(int x, int y, int column, int row)
+{
+  return (x > (BOARD_LEFT_MARGIN + (column * CELL_WIDTH))) && 
+         (x < (BOARD_LEFT_MARGIN + ((column + 1) * CELL_WIDTH))) && 
+         (y > (BOARD_TOP_MARGIN + (row * CELL_HEIGHT))) && 
+         (y < (BOARD_TOP_MARGIN + ((row + 1) * CELL_HEIGHT)));
 }
 
 /***********************************************************
@@ -198,7 +288,6 @@ void mouseReleased()
  ***********************************************************/
 void DrawBlackSquare(int column, int row)
 {
-  strokeWeight(0);
   fill(BLACK_COLOR);
   DrawSquare(column, row);
 }
@@ -208,8 +297,16 @@ void DrawBlackSquare(int column, int row)
  ***********************************************************/
 void DrawWhiteSquare(int column, int row)
 {
-  strokeWeight(0);
   fill(WHITE_COLOR);
+  DrawSquare(column, row);
+}
+
+/***********************************************************
+ * Draw Red Squares for Board
+ ***********************************************************/
+void DrawRedSquare(int column, int row)
+{
+  fill(RED_COLOR);
   DrawSquare(column, row);
 }
 
@@ -298,4 +395,21 @@ void DrawComputerKingAtXY(int x, int y)
   ellipse(x, y, MAN_WIDTH, MAN_HEIGHT);
   fill(COMPUTER_KING_COLOR);
   ellipse(x, y, KING_WIDTH, KING_HEIGHT);
+}
+
+/***********************************************************
+ * Write label at top of screen
+ ***********************************************************/
+void WriteLabel(String message)
+{
+  // Overwrite any existing text
+  stroke(GRAY_COLOR);
+  fill(GRAY_COLOR);
+  rect(0, 0, 1200, BOARD_TOP_MARGIN);
+  
+  // Add the text
+  PFont f = createFont("SourceCodePro-Regular.ttf", 40);
+  textFont(f);
+  fill(BLACK_COLOR);
+  text(message, 230, 50);
 }

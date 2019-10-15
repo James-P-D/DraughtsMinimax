@@ -53,11 +53,75 @@ class Board
         {
           this.pieces[column][row] = EMPTY;
         }
-        
-        print(pieces[column][row]);
       }
-      print("\n");
     }    
+
+    this.pieces[3][4]=COMPUTER_MAN;
+    this.Output();
+  }
+
+  Board(int initialPieces[][])
+  {
+    pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
+    
+    for(int column = 0; column < Board.BOARD_WIDTH; column++)
+    {    
+      for(int row = 0; row < Board.BOARD_HEIGHT; row++)
+      {
+        this.pieces[column][row] = initialPieces[column][row];
+      }
+    }
+  }
+  
+  Board Clone()
+  {
+    Board clonedBoard = new Board(this.pieces);
+    return clonedBoard;
+  }
+  
+  void Output()
+  {
+    print("+");
+    for(int column = 0; column < Board.BOARD_WIDTH; column++)
+    {
+      print("-");
+    }
+    print("+\n");
+    
+    for(int row = 0; row < Board.BOARD_HEIGHT; row++)
+    {
+      print("|");
+      for(int column = 0; column < Board.BOARD_WIDTH; column++)
+      {
+        switch(this.pieces[column][row])
+        {
+          case COMPUTER_MAN :
+            print("c");
+            break;
+          case COMPUTER_KING :
+            print("C");
+            break;
+          case HUMAN_MAN :
+            print("h");
+            break;
+          case HUMAN_KING :
+            print("H");
+            break;
+          case EMPTY :
+            print(" ");
+            break;        
+        }
+      }
+      print("|\n");
+    }
+    
+    print("+");
+    for(int column = 0; column < Board.BOARD_WIDTH; column++)
+    {
+      print("-");
+    }
+    print("+\n");
+    print("\n");
   }
   
   boolean IsSafe(int column, int row)
@@ -142,5 +206,35 @@ class Board
     }
     
     return totalScore;
+  }
+  
+  void ApplyMove(int column, int row, Move move)
+  {
+    /*
+    print("ApplyMove(");
+    print(column);
+    print(", ");
+    print(row);
+    print(") - (");
+    print(move.targetColumn);
+    print(", ");
+    print(move.targetRow);
+    print(")\n");
+    */
+    
+    this.pieces[move.targetColumn][move.targetRow] = this.pieces[column][row];
+    this.pieces[column][row] = Board.EMPTY;
+    if(move instanceof JumpMove)
+    {
+      board.pieces[((JumpMove)move).takenColumn][((JumpMove)move).takenRow] =  Board.EMPTY;
+      if(((JumpMove)move).nextJumpMoves.size() > 0)
+      {
+        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
+      }
+    }
   }
 }

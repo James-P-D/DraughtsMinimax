@@ -78,10 +78,8 @@ void draw()
  * Draw the board.
  * - Draws black and white squares
  * - Draws pieces (both normal men and kings, if any)
- * - Handles highlighting of pieces during mouseover
- *   for human moves
- * - Handles highlighting of valid possible move squares
- *   for human moves
+ * - Handles highlighting of pieces during mouseover for human moves
+ * - Handles highlighting of valid possible move squares for human moves
  ***********************************************************/
 void DrawBoard()
 {

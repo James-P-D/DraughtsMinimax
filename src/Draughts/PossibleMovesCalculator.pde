@@ -45,7 +45,7 @@ class PossibleMovesCalculator
         // Check Bottom Right
         if((column + 1 < Board.BOARD_WIDTH) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 1, row + 1))
         {
-          this.Moves.add(new StepMove(column + 1, row - 1));
+          this.Moves.add(new StepMove(column + 1, row + 1));
         }
         
         // Check for Jump Moves
@@ -85,7 +85,7 @@ class PossibleMovesCalculator
         // Check Bottom Right
         if((column + 1 < Board.BOARD_WIDTH) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 1, row + 1))
         {
-          this.Moves.add(new StepMove(column + 1, row - 1));
+          this.Moves.add(new StepMove(column + 1, row + 1));
         }
         
         // Check for Jump Moves

@@ -209,7 +209,7 @@ class Board
   }
   
   void ApplyMove(int column, int row, Move move)
-  {
+  { //<>//
     /*
     print("ApplyMove(");
     print(column);

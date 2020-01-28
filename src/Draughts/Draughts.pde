@@ -4,7 +4,7 @@
 /***********************************************************
  * Constants
  ***********************************************************/
-final int MAX_SEARCH_DEPTH = 6;
+static final int MAX_SEARCH_DEPTH = 5;
 
 static final int BOARD_LEFT_MARGIN = 75;
 static final int BOARD_TOP_MARGIN = 75;
@@ -56,7 +56,7 @@ PossibleMovesCalculator possibleMovesCalculator;
  ***********************************************************/
 void setup() 
 {
-  size(1200, 800);
+  size(800, 800);
   background(GRAY_COLOR);
   this.board = new Board();
   
@@ -86,7 +86,7 @@ void DrawBoard()
   // Make the entire NxN board black to begin with, this way we don't need to actually draw the black
   // squares since the spaces between the white squares will be black regardless.
   stroke(BLACK_COLOR);
-  strokeWeight(0);
+  strokeWeight(2);
   fill(BLACK_COLOR);
   rect(BOARD_LEFT_MARGIN,
        BOARD_TOP_MARGIN,
@@ -102,7 +102,10 @@ void DrawBoard()
   {
     this.WriteLabel(COMPUTER_TURN_MESSAGE);
   }
-  
+
+  stroke(BLACK_COLOR);
+  strokeWeight(2);
+
   // Now loop through all the squares
   for(int column = 0; column < Board.BOARD_WIDTH; column++)
   {
@@ -403,11 +406,12 @@ void WriteLabel(String message)
   // Overwrite any existing text
   stroke(GRAY_COLOR);
   fill(GRAY_COLOR);
-  rect(0, 0, 1200, BOARD_TOP_MARGIN);
+  rect(0, 0, 800, BOARD_TOP_MARGIN);
   
   // Add the text
   PFont f = createFont("SourceCodePro-Regular.ttf", 40);
   textFont(f);
+  textAlign(CENTER);
   fill(BLACK_COLOR);
-  text(message, 230, 50);
+  text(message, 400, 50);
 }

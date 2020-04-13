@@ -132,18 +132,36 @@ void DrawBoard()
         // If it's the Human-turn, turn any possible-move square to red
         if(this.humanTurn)
         {
+          //TODO: Move all this to outside the for loop so that we create an array of 'red-squares'
+          //That way we aren't iterating over it again and again for every single square!
           if((humanMovingPieceColumn != -1) &&
              (humanMovingPieceRow != -1))
           {      
             if(possibleMovesCalculator != null)
             {
-              for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
-              {
-                if((possibleMovesCalculator.Moves.get(i).targetColumn == column) &&
-                   (possibleMovesCalculator.Moves.get(i).targetRow == row))
+              for(int i = 0; i< possibleMovesCalculator.Moves.size(); i++)
+              {                
+                if(possibleMovesCalculator.Moves.get(i) instanceof JumpMove)
                 {
-                  DrawRedSquare(column, row);
-                  break;
+                  JumpMove possibleJumpMove = (JumpMove)possibleMovesCalculator.Moves.get(i);
+                  while(possibleJumpMove.nextJumpMove != null)
+                  {
+                    possibleJumpMove = possibleJumpMove.nextJumpMove;
+                  }
+                  if((possibleJumpMove.targetColumn == column) &&
+                     (possibleJumpMove.targetRow == row))
+                  {
+                    DrawRedSquare(column, row);
+                  }
+                }
+                else if(possibleMovesCalculator.Moves.get(i) instanceof StepMove)
+                {
+                  Move possibleMove = possibleMovesCalculator.Moves.get(i);
+                  if((possibleMove.targetColumn == column) &&
+                     (possibleMove.targetRow == row))
+                  {
+                    DrawRedSquare(column, row);
+                  }
                 }
               }
             }
@@ -256,17 +274,36 @@ void mouseReleased()
       int column = (mouseX - BOARD_LEFT_MARGIN) / CELL_WIDTH;
       int row = (mouseY - BOARD_TOP_MARGIN) / CELL_HEIGHT;
       
-      if(possibleMovesCalculator!=null)
+      if(possibleMovesCalculator != null)
       {
         for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
         {
-          Move possibleMove = possibleMovesCalculator.Moves.get(i);
-          if((column == possibleMove.targetColumn) && (row == possibleMove.targetRow))
+          if(possibleMovesCalculator.Moves.get(i) instanceof StepMove)
           {
-            mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, possibleMove);
+            StepMove possibleMove = (StepMove)possibleMovesCalculator.Moves.get(i);
+            if((column == possibleMove.targetColumn) && (row == possibleMove.targetRow))
+            {
+              mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, possibleMove);
                     
-            this.humanTurn = false;
-            break;
+              this.humanTurn = false;
+              break;
+            }
+          }
+          else if(possibleMovesCalculator.Moves.get(i) instanceof JumpMove)
+          {
+            JumpMove initialJumpMove = (JumpMove)possibleMovesCalculator.Moves.get(i);
+            JumpMove jumpMove = (JumpMove)possibleMovesCalculator.Moves.get(i);
+            do {              
+              jumpMove = jumpMove.nextJumpMove;
+            } while(jumpMove.nextJumpMove != null);
+            
+            if((column == jumpMove.targetColumn) && (row == jumpMove.targetRow))
+            {
+              mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, initialJumpMove);
+                    
+              this.humanTurn = false;
+              break;
+            }
           }
         }
         possibleMovesCalculator = null;

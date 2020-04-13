@@ -16,6 +16,7 @@ class MinimaxTree
           
           for(int i=0; i<possibleMovesCalculator.Moves.size(); i++)
           {
+            /*
             print(column);
             print(", ");
             print(row);
@@ -25,7 +26,7 @@ class MinimaxTree
             print(", ");
             print(possibleMovesCalculator.Moves.get(i).targetRow);
             print("\n");
-            
+            */
             MinimaxNode childNode = new MinimaxNode(board.Clone(), column, row, possibleMovesCalculator.Moves.get(i), false, 0);
             this.childNodes.add(childNode);
           }          

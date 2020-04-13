@@ -26,7 +26,7 @@ class Board
 
   int pieces[][];
   
-  Board()
+  public Board()
   {
     pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
     
@@ -56,11 +56,10 @@ class Board
       }
     }    
 
-    this.pieces[3][4]=COMPUTER_MAN;
     this.Output();
   }
 
-  Board(int initialPieces[][])
+  public Board(int initialPieces[][])
   {
     pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
     
@@ -73,13 +72,13 @@ class Board
     }
   }
   
-  Board Clone()
+  public Board Clone()
   {
     Board clonedBoard = new Board(this.pieces);
     return clonedBoard;
   }
   
-  void Output()
+  public void Output()
   {
     print("+");
     for(int column = 0; column < Board.BOARD_WIDTH; column++)
@@ -124,7 +123,7 @@ class Board
     print("\n");
   }
   
-  boolean IsSafe(int column, int row)
+  private boolean IsSafe(int column, int row)
   {  
     if((column == 0) || (column == BOARD_WIDTH - 1) || // If piece is against either vertical side of board..
        (row == 0) || (row == BOARD_HEIGHT - 1))        // ..or against either the top or bottom of board..
@@ -165,22 +164,22 @@ class Board
     return false;
   }
   
-  boolean IsHuman(int column, int row)
+  private boolean IsHuman(int column, int row)
   {
     return (this.pieces[column][row] == HUMAN_MAN) || (this.pieces[column][row] == HUMAN_KING);
   }
   
-  boolean IsComputer(int column, int row)
+  private boolean IsComputer(int column, int row)
   {
     return (this.pieces[column][row] == COMPUTER_MAN) || (this.pieces[column][row] == COMPUTER_KING);
   }
   
-  boolean IsEmpty(int column, int row)
+  private boolean IsEmpty(int column, int row)
   {
     return (this.pieces[column][row] == EMPTY);
   }
   
-  int CalculateScore()
+  private int CalculateScore()
   {
     int totalScore = 0;
     for(int column = 0; column < BOARD_WIDTH; column++)
@@ -208,7 +207,7 @@ class Board
     return totalScore;
   }
   
-  void ApplyMove(int column, int row, Move move)
+  private void ApplyMove(int column, int row, Move move)
   { //<>//
     /*
     print("ApplyMove(");
@@ -222,19 +221,31 @@ class Board
     print(")\n");
     */
     
-    this.pieces[move.targetColumn][move.targetRow] = this.pieces[column][row];
-    this.pieces[column][row] = Board.EMPTY;
-    if(move instanceof JumpMove)
+    if(move instanceof StepMove)
     {
-      board.pieces[((JumpMove)move).takenColumn][((JumpMove)move).takenRow] =  Board.EMPTY;
+      this.pieces[move.targetColumn][move.targetRow] = this.pieces[column][row];
+      this.pieces[column][row] = Board.EMPTY;
+    }
+    else if(move instanceof JumpMove)
+    {
+      this.pieces[((JumpMove)move).takenColumn][((JumpMove)move).takenRow] =  Board.EMPTY;
       if(((JumpMove)move).nextJumpMoves.size() > 0)
       {
-        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
-        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
-        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
-        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
-        print("Need to implement chainged jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chained jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chained jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chained jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chained jumps!!!!!!!!!!!!!\n");
+        print("Need to implement chained jumps!!!!!!!!!!!!!\n");
       }
+    }
+    
+    if((this.pieces[move.targetColumn][move.targetRow] == Board.COMPUTER_MAN) && (move.targetRow == (Board.BOARD_HEIGHT -1)))
+    {
+      this.pieces[move.targetColumn][move.targetRow] = Board.COMPUTER_KING;
+    }
+    else if((this.pieces[move.targetColumn][move.targetRow] == Board.HUMAN_MAN) && (move.targetRow == 0))
+    {
+      this.pieces[move.targetColumn][move.targetRow] = Board.HUMAN_KING;
     }
   }
 }

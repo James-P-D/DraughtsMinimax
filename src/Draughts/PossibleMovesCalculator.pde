@@ -1,9 +1,10 @@
 class PossibleMovesCalculator
 {
-  int initialColumn;
-  int initialRow;
+  private int initialColumn;
+  private int initialRow;
+  private ArrayList<Move> Moves;
   
-  PossibleMovesCalculator(Board board, int column, int row)
+  public PossibleMovesCalculator(Board board, int column, int row)
   {
     this.initialColumn = column;
     this.initialRow = row;
@@ -94,11 +95,11 @@ class PossibleMovesCalculator
     }
   }
   
-  ArrayList<Move> Moves;
   
   private ArrayList<JumpMove> GetJumpMoveTree(Board board, int column, int row) 
   {
     ArrayList<JumpMove> jumpMoves = new ArrayList<JumpMove>();
+
     switch(board.pieces[column][row])
     {
       case Board.HUMAN_MAN:
@@ -112,9 +113,9 @@ class PossibleMovesCalculator
           newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
           newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_MAN;
           
-          jumpMove.nextJumpMoves.addAll(GetJumpMoveTree(newBoard, jumpMove.targetColumn, jumpMove.targetRow));
+          //jumpMove.nextJumpMoves.addAll(GetJumpMoveTree(newBoard, jumpMove.targetColumn, jumpMove.targetRow));
           this.Moves.add(jumpMove);
-        }
+        }        
         // Check Top Right
         if((column + 2 < Board.BOARD_WIDTH) && (row - 2 >= 0) && board.IsEmpty(column + 2, row - 2) && board.IsComputer(column + 1, row - 1))
         {
@@ -181,7 +182,6 @@ class PossibleMovesCalculator
         }
         break;        
     }
-    
     return jumpMoves;
   }
 }

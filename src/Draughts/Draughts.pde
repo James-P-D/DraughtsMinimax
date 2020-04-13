@@ -4,20 +4,21 @@
 /***********************************************************
  * Constants
  ***********************************************************/
-static final int MAX_SEARCH_DEPTH = 5;
+static final int MAX_SEARCH_DEPTH = 2;
 
 static final int BOARD_LEFT_MARGIN = 75;
 static final int BOARD_TOP_MARGIN = 75;
 static final int CELL_WIDTH = 80;
 static final int CELL_HEIGHT = 80;
-static final int MAN_WIDTH = CELL_WIDTH - 4;
-static final int MAN_HEIGHT = CELL_HEIGHT - 4;
-static final int KING_WIDTH = CELL_WIDTH - 20;
-static final int KING_HEIGHT = CELL_HEIGHT - 20;
+static final int MAN_WIDTH = CELL_WIDTH - 10;
+static final int MAN_HEIGHT = CELL_HEIGHT - 10;
+static final int KING_WIDTH = CELL_WIDTH - 30;
+static final int KING_HEIGHT = CELL_HEIGHT - 30;
 
 final color WHITE_COLOR = color(255, 255, 255);
 final color BLACK_COLOR = color(0, 0, 0);
 final color GRAY_COLOR = color(120, 120, 120);
+final color LIGHT_GRAY_COLOR = color(60, 60, 60);
 final color RED_COLOR = color(255, 0, 0);
 final color GREEN_COLOR = color(0, 255, 0);
 final color BLUE_COLOR = color(0, 0, 255);
@@ -28,21 +29,23 @@ final color CYAN_COLOR = color(0, 255, 255);
 final color DARK_BLUE_COLOR = color(0, 0, 126);
 final color DARK_YELLOW_COLOR = color(126, 126, 0);
 
-final color COMPUTER_MAN_COLOR = BLUE_COLOR;
-final color COMPUTER_KING_COLOR = DARK_BLUE_COLOR;
-final color HUMAN_MAN_COLOR = YELLOW_COLOR;
-final color HUMAN_KING_COLOR = DARK_YELLOW_COLOR;
+final color BOARD_CELL_COLOR_1 = WHITE_COLOR;
+final color BOARD_CELL_COLOR_2 = LIGHT_GRAY_COLOR;//BLACK_COLOR;
+final color COMPUTER_MAN_COLOR = BLACK_COLOR;
+final color COMPUTER_KING_COLOR = BLACK_COLOR;
+final color HUMAN_MAN_COLOR = WHITE_COLOR;
+final color HUMAN_KING_COLOR = WHITE_COLOR;
 
 final String HUMAN_TURN_MESSAGE = "HUMAN TURN";
 final String COMPUTER_TURN_MESSAGE = "COMPUTER TURN";
-final String HUMAN_WINS = "HUMAN WINS!";
-final String COMPUTER_WINS = "COMPUTER WINS!";
-final String DRAW = "DRAW";
+final String HUMAN_WINS_MESSAGE = "HUMAN WINS!";
+final String COMPUTER_WINS_MESSAGE = "COMPUTER WINS!";
+final String DRAW_MESSAGE = "DRAW";
 
 /***********************************************************
  * Global Variables (yuck!)
  ***********************************************************/
-Board board;
+Board mainBoard;
 boolean humanGoesFirst;
 boolean humanTurn;
 int humanMovingPieceColumn;
@@ -56,9 +59,15 @@ PossibleMovesCalculator possibleMovesCalculator;
  ***********************************************************/
 void setup() 
 {
-  size(800, 800);
+  // Form width should be (CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN)
+  // Form height should be (CELL_HEIGHT * Board.BOARD_HEIGHT) + (2 * BOARD_TOP_MARGIN)
+  // size() doesn't allow anything other than integer literals for paramters, so we
+  // have to use surface.setSize() instead!
+  //size(800, 800);
+  surface.setSize((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN), (CELL_HEIGHT * Board.BOARD_HEIGHT) + (2 * BOARD_TOP_MARGIN)); 
+ 
   background(GRAY_COLOR);
-  this.board = new Board();
+  this.mainBoard = new Board();
   
   this.humanGoesFirst = true;
   this.humanTurn = this.humanGoesFirst;
@@ -77,7 +86,7 @@ void draw()
 /***********************************************************
  * Draw the board.
  * - Draws black and white squares
- * - Draws pieces (both normal men and kings, if any)
+ * - Draws pieces (both men, and kings if any)
  * - Handles highlighting of pieces during mouseover for human moves
  * - Handles highlighting of valid possible move squares for human moves
  ***********************************************************/
@@ -85,9 +94,9 @@ void DrawBoard()
 {
   // Make the entire NxN board black to begin with, this way we don't need to actually draw the black
   // squares since the spaces between the white squares will be black regardless.
-  stroke(BLACK_COLOR);
+  stroke(BOARD_CELL_COLOR_2);
   strokeWeight(2);
-  fill(BLACK_COLOR);
+  fill(BOARD_CELL_COLOR_2);
   rect(BOARD_LEFT_MARGIN,
        BOARD_TOP_MARGIN,
        CELL_WIDTH * Board.BOARD_WIDTH,
@@ -103,7 +112,7 @@ void DrawBoard()
     this.WriteLabel(COMPUTER_TURN_MESSAGE);
   }
 
-  stroke(BLACK_COLOR);
+  stroke(BOARD_CELL_COLOR_1);
   strokeWeight(2);
 
   // Now loop through all the squares
@@ -141,11 +150,11 @@ void DrawBoard()
       }
       
       // For the current Column and Row, if it isn't the currently moving Human piece, then just
-      // draw the relevent cirlce.
+      // draw the relevent circle.
       if(!((column == this.humanMovingPieceColumn) && (row == this.humanMovingPieceRow)))
       {
         // Draw the actual pieces
-        switch(board.pieces[column][row])
+        switch(mainBoard.pieces[column][row])
         {
           case Board.COMPUTER_MAN:
             this.DrawComputerManAtSquare(column, row);
@@ -172,7 +181,7 @@ void DrawBoard()
     tempMouseX = min(tempMouseX, BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH) - (CELL_WIDTH / 2));
     tempMouseY = min(tempMouseY, BOARD_TOP_MARGIN + (CELL_HEIGHT * Board.BOARD_HEIGHT) - (CELL_HEIGHT / 2));
     
-    switch(board.pieces[this.humanMovingPieceColumn][this.humanMovingPieceRow])
+    switch(mainBoard.pieces[this.humanMovingPieceColumn][this.humanMovingPieceRow])
     {
       case Board.HUMAN_MAN:
         this.DrawHumanManAtXY(tempMouseX, tempMouseY);
@@ -189,7 +198,8 @@ void DrawBoard()
   {
     //computerProcsesing = true;
     CalculateComputerMove();
-    noLoop();
+    //noLoop();
+    humanTurn = true;
   }
 }
 
@@ -203,12 +213,12 @@ void mousePressed()
       int column = (mouseX - BOARD_LEFT_MARGIN) / CELL_WIDTH;
       int row = (mouseY - BOARD_TOP_MARGIN) / CELL_HEIGHT;
       
-      if(board.IsHuman(column, row))
+      if(mainBoard.IsHuman(column, row))
       {
         this.humanMovingPieceColumn = column;
         this.humanMovingPieceRow = row;
         
-        possibleMovesCalculator = new PossibleMovesCalculator(board, column, row);
+        possibleMovesCalculator = new PossibleMovesCalculator(mainBoard, column, row);
         
         for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
         {
@@ -244,16 +254,20 @@ void mouseReleased()
       int column = (mouseX - BOARD_LEFT_MARGIN) / CELL_WIDTH;
       int row = (mouseY - BOARD_TOP_MARGIN) / CELL_HEIGHT;
       
-      for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
+      if(possibleMovesCalculator!=null)
       {
-        Move possibleMove = possibleMovesCalculator.Moves.get(i);
-        if((column == possibleMove.targetColumn) && (row == possibleMove.targetRow))
+        for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
         {
-          board.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, possibleMove);
+          Move possibleMove = possibleMovesCalculator.Moves.get(i);
+          if((column == possibleMove.targetColumn) && (row == possibleMove.targetRow))
+          {
+            mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, possibleMove);
                     
-          this.humanTurn = false;
-          break;
+            this.humanTurn = false;
+            break;
+          }
         }
+        possibleMovesCalculator = null;
       }
     }
   }
@@ -267,9 +281,15 @@ void mouseReleased()
 void CalculateComputerMove()
 {
   print("Start calculating\n");
-  MinimaxTree minimaxTree = new MinimaxTree(this.board);
+  this.mainBoard.Output();
+  
+  MinimaxTree minimaxTree = new MinimaxTree(this.mainBoard);
+  this.mainBoard.ApplyMove(minimaxTree.childNodes.get(0).column, minimaxTree.childNodes.get(0).row, minimaxTree.childNodes.get(0).move);
+  this.mainBoard.Output();
   print("Done calculating\n");
   //this.computerProcsesing = false;
+  System.gc();
+
 }
 
 /***********************************************************
@@ -289,7 +309,7 @@ boolean OverSquare(int x, int y, int column, int row)
  ***********************************************************/
 void DrawBlackSquare(int column, int row)
 {
-  fill(BLACK_COLOR);
+  fill(BOARD_CELL_COLOR_1);
   DrawSquare(column, row);
 }
 
@@ -298,7 +318,7 @@ void DrawBlackSquare(int column, int row)
  ***********************************************************/
 void DrawWhiteSquare(int column, int row)
 {
-  fill(WHITE_COLOR);
+  fill(BOARD_CELL_COLOR_1);
   DrawSquare(column, row);
 }
 
@@ -316,6 +336,7 @@ void DrawRedSquare(int column, int row)
  ***********************************************************/
 void DrawSquare(int column, int row) 
 {
+  strokeWeight(0);
   rect(BOARD_LEFT_MARGIN + (column * CELL_WIDTH),
        BOARD_TOP_MARGIN + (row * CELL_HEIGHT),
        CELL_WIDTH,
@@ -345,6 +366,8 @@ void DrawComputerManAtSquare(int column, int row)
  ***********************************************************/
 void DrawHumanManAtXY(int x, int y) 
 {
+  stroke(COMPUTER_MAN_COLOR);
+  strokeWeight(2);
   fill(HUMAN_MAN_COLOR);
   ellipse(x, y, MAN_WIDTH, MAN_HEIGHT); 
 }
@@ -354,6 +377,8 @@ void DrawHumanManAtXY(int x, int y)
  ***********************************************************/
 void DrawComputerManAtXY(int x, int y) 
 {
+  stroke(HUMAN_MAN_COLOR);
+  strokeWeight(2);
   fill(COMPUTER_MAN_COLOR);
   ellipse(x, y, MAN_WIDTH, MAN_HEIGHT); 
 }
@@ -381,6 +406,8 @@ void DrawComputerKingAtSquare(int column, int row)
  ***********************************************************/
 void DrawHumanKingAtXY(int x, int y) 
 {
+  stroke(COMPUTER_MAN_COLOR);
+  strokeWeight(2);
   fill(HUMAN_MAN_COLOR);
   ellipse(x, y, MAN_WIDTH, MAN_HEIGHT);
   fill(HUMAN_KING_COLOR);
@@ -392,6 +419,8 @@ void DrawHumanKingAtXY(int x, int y)
  ***********************************************************/
 void DrawComputerKingAtXY(int x, int y) 
 {
+  stroke(HUMAN_MAN_COLOR);
+  strokeWeight(2);
   fill(COMPUTER_MAN_COLOR);
   ellipse(x, y, MAN_WIDTH, MAN_HEIGHT);
   fill(COMPUTER_KING_COLOR);
@@ -406,12 +435,15 @@ void WriteLabel(String message)
   // Overwrite any existing text
   stroke(GRAY_COLOR);
   fill(GRAY_COLOR);
-  rect(0, 0, 800, BOARD_TOP_MARGIN);
+  rect(0, 0, (CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN), BOARD_TOP_MARGIN);
+ 
+ //surface.setSize((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN), (CELL_HEIGHT * Board.BOARD_HEIGHT) + (2 * BOARD_TOP_MARGIN)); 
+ 
   
   // Add the text
   PFont f = createFont("SourceCodePro-Regular.ttf", 40);
   textFont(f);
   textAlign(CENTER);
   fill(BLACK_COLOR);
-  text(message, 400, 50);
+  text(message, ((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN)) / 2, 50);
 }

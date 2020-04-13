@@ -1,6 +1,6 @@
 class MinimaxTree
 {  
-  ArrayList<MinimaxNode> childNodes;
+  public ArrayList<MinimaxNode> childNodes;
   
   MinimaxTree(Board board)
   {
@@ -31,6 +31,6 @@ class MinimaxTree
           }          
         }
       }
-    }
+    } 
   }
 }

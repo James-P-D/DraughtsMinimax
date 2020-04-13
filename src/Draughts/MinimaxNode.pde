@@ -2,11 +2,16 @@ class MinimaxNode
 {
   ArrayList<MinimaxNode> childNodes;
   int score;
+  Move move;
+  int row;
+  int column;
   
   MinimaxNode(Board board, int currentColumn, int currentRow, Move move, boolean humanPlayer, int depth)
   {
-    //print("Depth: "+depth);
-    this.childNodes = new ArrayList<MinimaxNode>();
+    this.childNodes = new ArrayList<MinimaxNode>(); //<>//
+    this.column = currentColumn;
+    this.row = currentRow;
+    this.move = move;
     
     board.ApplyMove(currentColumn, currentRow, move);
     
@@ -29,5 +34,6 @@ class MinimaxNode
         }
       }
     }
+    
   }
 }

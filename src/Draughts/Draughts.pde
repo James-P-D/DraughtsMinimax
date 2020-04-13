@@ -65,7 +65,9 @@ void setup()
   // have to use surface.setSize() instead!
   //size(800, 800);
   surface.setSize((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN), (CELL_HEIGHT * Board.BOARD_HEIGHT) + (2 * BOARD_TOP_MARGIN)); 
- 
+  surface.setResizable(false);
+  surface.setLocation(0, 0);
+  
   background(GRAY_COLOR);
   this.mainBoard = new Board();
   
@@ -245,7 +247,7 @@ void mousePressed()
  * a valid place to relocate the piece.
  ***********************************************************/
 void mouseReleased()
-{  
+{
   if(this.humanTurn) 
   {
     if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&

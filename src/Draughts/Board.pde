@@ -36,6 +36,8 @@ class Board
       {        
         if((row + column) % 2 == 1)
         {
+          this.pieces[column][row] = EMPTY;
+          
           if(row < COMPUTER_ROWS)
           {
             this.pieces[column][row] = COMPUTER_MAN;
@@ -44,10 +46,6 @@ class Board
           {
             this.pieces[column][row] = HUMAN_MAN;
           }
-          else
-          {
-            this.pieces[column][row] = EMPTY;
-          }
         }
         else
         {
@@ -55,7 +53,6 @@ class Board
         }
       }
     }    
-
     this.Output();
   }
 
@@ -223,12 +220,13 @@ class Board
     
     if(move instanceof StepMove)
     {
+      // Move the piece to the target position
       this.pieces[move.targetColumn][move.targetRow] = this.pieces[column][row];
+      // Mark the start-position as empty
       this.pieces[column][row] = Board.EMPTY;
     }
     else if(move instanceof JumpMove)
     {
-      this.pieces[((JumpMove)move).takenColumn][((JumpMove)move).takenRow] =  Board.EMPTY;
       if(((JumpMove)move).nextJumpMoves.size() > 0)
       {
         print("Need to implement chained jumps!!!!!!!!!!!!!\n");
@@ -236,6 +234,13 @@ class Board
         print("Need to implement chained jumps!!!!!!!!!!!!!\n");
         print("Need to implement chained jumps!!!!!!!!!!!!!\n");
         print("Need to implement chained jumps!!!!!!!!!!!!!\n");
+      } else {
+        // Mark the piece we are jumping over as empty
+        this.pieces[((JumpMove)move).takenColumn][((JumpMove)move).takenRow] =  Board.EMPTY;
+        // Move the piece to the target position (jumping over the taken piece)
+        this.pieces[((JumpMove)move).targetColumn][((JumpMove)move).targetRow] = this.pieces[column][row];
+        // Mark the start-position as empty
+        this.pieces[column][row] = Board.EMPTY;
       }
     }
     

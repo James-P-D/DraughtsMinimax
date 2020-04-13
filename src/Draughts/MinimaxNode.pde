@@ -8,7 +8,7 @@ class MinimaxNode
   
   MinimaxNode(Board board, int currentColumn, int currentRow, Move move, boolean humanPlayer, int depth)
   {
-    this.childNodes = new ArrayList<MinimaxNode>(); //<>//
+    this.childNodes = new ArrayList<MinimaxNode>();
     this.column = currentColumn;
     this.row = currentRow;
     this.move = move;

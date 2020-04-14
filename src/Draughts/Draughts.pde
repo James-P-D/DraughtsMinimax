@@ -4,7 +4,7 @@
 /***********************************************************
  * Constants
  ***********************************************************/
-static final int MAX_SEARCH_DEPTH = 2;
+static final int MAX_SEARCH_DEPTH = 6;
 
 static final int BOARD_LEFT_MARGIN = 75;
 static final int BOARD_TOP_MARGIN = 75;
@@ -51,6 +51,7 @@ boolean humanTurn;
 int humanMovingPieceColumn;
 int humanMovingPieceRow;
 
+ArrayList<PositionTuple> possibleMovePositions;
 PossibleMovesCalculator possibleMovesCalculator;
 
 /***********************************************************
@@ -75,6 +76,8 @@ void setup()
   this.humanTurn = this.humanGoesFirst;
   this.humanMovingPieceColumn = -1;
   this.humanMovingPieceRow = -1;
+  
+  this.possibleMovePositions = new ArrayList<PositionTuple>();
 }
 
 /***********************************************************
@@ -132,37 +135,18 @@ void DrawBoard()
         // If it's the Human-turn, turn any possible-move square to red
         if(this.humanTurn)
         {
-          //TODO: Move all this to outside the for loop so that we create an array of 'red-squares'
-          //That way we aren't iterating over it again and again for every single square!
           if((humanMovingPieceColumn != -1) &&
              (humanMovingPieceRow != -1))
           {      
             if(possibleMovesCalculator != null)
             {
-              for(int i = 0; i< possibleMovesCalculator.Moves.size(); i++)
+              for(int i = 0; i< this.possibleMovePositions.size(); i++)
               {                
-                if(possibleMovesCalculator.Moves.get(i) instanceof JumpMove)
+                if((this.possibleMovePositions.get(i).column == column) &&
+                   (this.possibleMovePositions.get(i).row == row))
                 {
-                  JumpMove possibleJumpMove = (JumpMove)possibleMovesCalculator.Moves.get(i);
-                  while(possibleJumpMove.nextJumpMove != null)
-                  {
-                    possibleJumpMove = possibleJumpMove.nextJumpMove;
-                  }
-                  if((possibleJumpMove.targetColumn == column) &&
-                     (possibleJumpMove.targetRow == row))
-                  {
-                    DrawRedSquare(column, row);
-                  }
-                }
-                else if(possibleMovesCalculator.Moves.get(i) instanceof StepMove)
-                {
-                  Move possibleMove = possibleMovesCalculator.Moves.get(i);
-                  if((possibleMove.targetColumn == column) &&
-                     (possibleMove.targetRow == row))
-                  {
-                    DrawRedSquare(column, row);
-                  }
-                }
+                  DrawRedSquare(column, row);
+                }                
               }
             }
           }
@@ -223,10 +207,19 @@ void DrawBoard()
   }
 }
 
+/***********************************************************
+ * Mouse Pressed Event. When user presses mouse, check if they
+ * are over a human-piece (man or king) and if so, calculate
+ * possible moves for the piece. Finally, store final target
+ * column and row values in possibleMovePositions so that our
+ * main Draw() loop can high-light the valid target cells
+ * in red.
+ ***********************************************************/
 void mousePressed() 
 {
   if(this.humanTurn) 
   {
+    noLoop();
     if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&
        (mouseY > BOARD_TOP_MARGIN) && (mouseY < BOARD_TOP_MARGIN + (CELL_HEIGHT * Board.BOARD_HEIGHT)))
     {
@@ -239,25 +232,27 @@ void mousePressed()
         this.humanMovingPieceRow = row;
         
         possibleMovesCalculator = new PossibleMovesCalculator(mainBoard, column, row);
+        this.possibleMovePositions.clear();
         
         for(int i=0; i< possibleMovesCalculator.Moves.size(); i++)
         {
           Move possibleMove = possibleMovesCalculator.Moves.get(i);
           if(possibleMove instanceof StepMove)
           {
-            print("Move: ");
+            this.possibleMovePositions.add(new PositionTuple(possibleMove.targetColumn, possibleMove.targetRow)); 
           } else if(possibleMove instanceof JumpMove) {
-            print("Jump: ");
-          } else {
-            print("Unknown! ");
+            JumpMove possibleJumpMove = (JumpMove)possibleMove;
+            while(possibleJumpMove.nextJumpMove != null)
+            {
+              possibleJumpMove = possibleJumpMove.nextJumpMove;
+            }
+            this.possibleMovePositions.add(new PositionTuple(possibleJumpMove.targetColumn, possibleJumpMove.targetRow));
           }
-          print(possibleMove.targetColumn);
-          print(", ");
-          print(possibleMove.targetRow);
-          print("\n");
         }
       }
     }
+    
+    loop();
   }
 }
 
@@ -273,6 +268,7 @@ void mouseReleased()
     if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&
        (mouseY > BOARD_TOP_MARGIN) && (mouseY < BOARD_TOP_MARGIN + (CELL_HEIGHT * Board.BOARD_HEIGHT)))
     {
+      noLoop();
       int column = (mouseX - BOARD_LEFT_MARGIN) / CELL_WIDTH;
       int row = (mouseY - BOARD_TOP_MARGIN) / CELL_HEIGHT;
       
@@ -309,14 +305,21 @@ void mouseReleased()
               mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, initialJumpMove);
                     
               this.humanTurn = false;
-              break;
             }
           }
         }
         possibleMovesCalculator = null;
       }
+      
+      loop();
     }
   }
+  
+  if(!humanTurn)
+  {
+    this.possibleMovePositions.clear();
+  }
+  
   this.humanMovingPieceColumn = -1;
   this.humanMovingPieceRow = -1;
 }
@@ -335,7 +338,6 @@ void CalculateComputerMove()
   print("Done calculating\n");
   //this.computerProcsesing = false;
   System.gc();
-
 }
 
 /***********************************************************

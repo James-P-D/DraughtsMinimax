@@ -104,9 +104,9 @@ class PossibleMovesCalculator
           JumpMove jumpMove = new JumpMove(column - 2, row - 2, column - 1, row - 1);
           
           Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
           newBoard.pieces[column][row] = Board.EMPTY;
           newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
-          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_MAN;
           
           jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
           return jumpMove;
@@ -117,9 +117,9 @@ class PossibleMovesCalculator
           JumpMove jumpMove = new JumpMove(column + 2, row - 2, column + 1, row - 1);
           
           Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
           newBoard.pieces[column][row] = Board.EMPTY;
           newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
-          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_MAN;
           
           jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
           return jumpMove;
@@ -132,9 +132,9 @@ class PossibleMovesCalculator
           JumpMove jumpMove = new JumpMove(column - 2, row - 2, column -1, row - 1);
           
           Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
           newBoard.pieces[column][row] = Board.EMPTY;
           newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
-          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_MAN;
           
           jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
           return jumpMove;
@@ -143,10 +143,11 @@ class PossibleMovesCalculator
         if((column + 2 < Board.BOARD_WIDTH) && (row - 2 >= 0) && board.IsEmpty(column + 2, row - 2) && board.IsComputer(column + 1, row - 1))
         {
           JumpMove jumpMove = new JumpMove(column + 2, row - 2, column + 1, row - 1);
+          
           Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
           newBoard.pieces[column][row] = Board.EMPTY;
           newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
-          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_MAN;
           
           jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
           return jumpMove;
@@ -157,9 +158,9 @@ class PossibleMovesCalculator
           JumpMove jumpMove = new JumpMove(column - 2, row + 2, column - 1, row + 1);
           
           Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
           newBoard.pieces[column][row] = Board.EMPTY;
           newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
-          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_MAN;
           
           jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
           return jumpMove;
@@ -170,10 +171,92 @@ class PossibleMovesCalculator
           JumpMove jumpMove = new JumpMove(column + 2, row + 2, column + 1, row + 1);
 
           Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
           newBoard.pieces[column][row] = Board.EMPTY;
           newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
-          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_MAN;
           
+          jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
+          return jumpMove;
+        }
+        break;        
+      case Board.COMPUTER_MAN:
+        // Check Bottom Left
+        if((column - 2 >= 0) && (row + 2 < Board.BOARD_HEIGHT) && board.IsEmpty(column - 2, row + 2) && board.IsHuman(column - 1, row + 1))
+        {
+          JumpMove jumpMove = new JumpMove(column - 2, row + 2, column + 1, row - 1);
+          
+          Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
+          newBoard.pieces[column][row] = Board.EMPTY;
+          newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
+          
+          jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
+          return jumpMove;
+        }        
+        // Check Bottom Right
+        if((column + 2 < Board.BOARD_WIDTH) && (row + 2 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 2, row + 2) && board.IsHuman(column + 1, row + 1))
+        {
+          JumpMove jumpMove = new JumpMove(column + 2, row + 2, column + 1, row + 1);
+          
+          Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
+          newBoard.pieces[column][row] = Board.EMPTY;
+          newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
+          
+          jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
+          return jumpMove;
+        }
+        break;
+      case Board.COMPUTER_KING:
+        // Check Top Left
+        if((column - 2 >= 0) && (row - 2 >= 0) && board.IsEmpty(column - 2, row - 2) && board.IsHuman(column - 1, row - 1))
+        {
+          JumpMove jumpMove = new JumpMove(column - 2, row - 2, column - 1, row - 1);
+          
+          Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
+          newBoard.pieces[column][row] = Board.EMPTY;
+          newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
+          
+          jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
+          return jumpMove;
+        }
+        // Check Top Right
+        if((column + 2 < Board.BOARD_WIDTH) && (row - 2 >= 0) && board.IsEmpty(column + 2, row - 2) && board.IsHuman(column + 1, row - 1))
+        {
+          JumpMove jumpMove = new JumpMove(column + 2, row - 2, column + 1, row - 1);
+          
+          Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
+          newBoard.pieces[column][row] = Board.EMPTY;
+          newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
+          
+          jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
+          return jumpMove;
+        }
+        // Check Bottom Left
+        if((column - 2 >= 0) && (row + 2 < Board.BOARD_HEIGHT) && board.IsEmpty(column - 2, row + 2) && board.IsHuman(column - 1, row + 1))
+        {
+          JumpMove jumpMove = new JumpMove(column - 2, row + 2, column - 1, row + 1);
+          
+          Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
+          newBoard.pieces[column][row] = Board.EMPTY;
+          newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
+          
+          jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
+          return jumpMove;
+        }
+        // Check Bottom Right
+        if((column + 2 < Board.BOARD_WIDTH) && (row + 2 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 2, row + 2) && board.IsHuman(column + 1, row + 1))
+        {
+          JumpMove jumpMove = new JumpMove(column + 2, row + 2, column + 1, row + 1);
+
+          Board newBoard = board.Clone();
+          newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];
+          newBoard.pieces[column][row] = Board.EMPTY;
+          newBoard.pieces[jumpMove.takenColumn][jumpMove.takenRow] = Board.EMPTY;
+                   
           jumpMove.nextJumpMove = GetNextJumpMove(newBoard, jumpMove.targetColumn, jumpMove.targetRow);
           return jumpMove;
        }

@@ -53,6 +53,11 @@ class Board
         }
       }
     }
+    
+    //this.pieces[7][0]=COMPUTER_MAN;
+    //this.pieces[2][5]=COMPUTER_MAN;
+    //this.pieces[0][7]=HUMAN_MAN;
+    //this.pieces[2][7]=HUMAN_MAN;
     this.Output();
   }
 
@@ -218,7 +223,7 @@ class Board
     print(")\n");
     */
     
-    if(move instanceof StepMove) //<>//
+    if(move instanceof StepMove)
     {
       // Move the piece to the target position
       this.pieces[move.targetColumn][move.targetRow] = this.pieces[column][row];
@@ -238,18 +243,18 @@ class Board
     {
       int finalColumn = column;
       int finalRow = row;
-      JumpMove jumpMove = (JumpMove)move;
+      JumpMove jumpMove = (JumpMove)move; //<>//
       
       do {
         // Mark the piece we are jumping over as empty
         this.pieces[jumpMove.takenColumn][jumpMove.takenRow] =  Board.EMPTY;
         // Move the piece to the target position (jumping over the taken piece)
-        this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = this.pieces[column][row]; //<>//
+        this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = this.pieces[finalColumn][finalRow];
         // Mark the start-position as empty
         this.pieces[column][row] = Board.EMPTY;
         
-        column = jumpMove.targetColumn;
-        row = jumpMove.targetRow;
+        finalColumn = jumpMove.targetColumn;
+        finalRow = jumpMove.targetRow;
         jumpMove = jumpMove.nextJumpMove;      
       } while(jumpMove != null);
 

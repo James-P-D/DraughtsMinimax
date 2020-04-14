@@ -99,7 +99,7 @@ class PossibleMovesCalculator
     {
       case Board.HUMAN_MAN:
         // Check Top Left
-        if((column - 2 >= 0) && (row - 2 >= 0) && board.IsEmpty(column - 2, row - 2) && board.IsComputer(column - 1, row -1))
+        if((column - 2 >= 0) && (row - 2 >= 0) && board.IsEmpty(column - 2, row - 2) && board.IsComputer(column - 1, row - 1))
         {
           JumpMove jumpMove = new JumpMove(column - 2, row - 2, column - 1, row - 1);
           
@@ -183,7 +183,7 @@ class PossibleMovesCalculator
         // Check Bottom Left
         if((column - 2 >= 0) && (row + 2 < Board.BOARD_HEIGHT) && board.IsEmpty(column - 2, row + 2) && board.IsHuman(column - 1, row + 1))
         {
-          JumpMove jumpMove = new JumpMove(column - 2, row + 2, column + 1, row - 1);
+          JumpMove jumpMove = new JumpMove(column - 2, row + 2, column - 1, row + 1);
           
           Board newBoard = board.Clone();
           newBoard.pieces[jumpMove.targetColumn][jumpMove.targetRow] = newBoard.pieces[column][row];

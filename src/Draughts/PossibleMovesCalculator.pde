@@ -10,17 +10,18 @@ class PossibleMovesCalculator
     this.initialRow = row;
     this.Moves = new ArrayList<Move>();
 
-    switch(board.pieces[column][row])
+    // TODO: Do we want to only check for Jump moves? Hmm. have a think about MiniMax planning...
+    // Check for Jump Moves
+    JumpMove jumpMove = GetNextJumpMove(board, column, row); 
+    if(jumpMove != null) 
     {
-      case Board.HUMAN_MAN:
-        // TODO: Do we want to only check for Jump moves? Hmm. have a think about MiniMax planning... 
-        
-        // Check for Jump Moves
-        this.Moves.add(GetNextJumpMove(board, column, row));
-        
-        // Only check for step-moves if we have no jump moves so far
-        if(this.Moves.size() == 0)
-        {
+      this.Moves.add(jumpMove);
+    }
+    else 
+    {        
+      switch(board.pieces[column][row])
+      {
+        case Board.HUMAN_MAN:
           // Check Top Left
           if((column - 1 >= 0) && (row - 1 >= 0) && board.IsEmpty(column - 1, row - 1))
           {
@@ -31,66 +32,8 @@ class PossibleMovesCalculator
           {
             this.Moves.add(new StepMove(column + 1, row - 1));
           }
-        }
-        
-        break;
-      case Board.HUMAN_KING:
-        // Check for Jump Moves
-        this.Moves.add(GetNextJumpMove(board, column, row));
-        
-        // Only check for step-moves if we have no jump moves so far
-        if(this.Moves.size() == 0)
-        {
-          // Check Top Left
-          if((column - 1 >= 0) && (row - 1 >= 0) && board.IsEmpty(column - 1, row - 1))
-          {
-            this.Moves.add(new StepMove(column - 1, row - 1));
-          }
-          // Check Top Right
-          if((column + 1 < Board.BOARD_WIDTH) && (row - 1 >= 0) && board.IsEmpty(column + 1, row - 1))
-          {
-            this.Moves.add(new StepMove(column + 1, row - 1));
-          }
-          // Check Bottom Left
-          if((column - 1 >= 0) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column - 1, row + 1))
-          {
-            this.Moves.add(new StepMove(column - 1, row + 1));
-          }
-          // Check Bottom Right
-          if((column + 1 < Board.BOARD_WIDTH) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 1, row + 1))
-          {
-            this.Moves.add(new StepMove(column + 1, row + 1));
-          }
-        }
-
-        break;
-      case Board.COMPUTER_MAN:
-        // Check for Jump Moves
-        this.Moves.add(GetNextJumpMove(board, column, row));
-        
-        // Only check for step-moves if we have no jump moves so far
-        if(this.Moves.size() == 0)
-        {
-          // Check Bottom Left
-          if((column - 1 >= 0) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column - 1, row + 1))
-          {
-            this.Moves.add(new StepMove(column - 1, row + 1));
-          }
-          // Check Bottom Right
-          if((column + 1 < Board.BOARD_WIDTH) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 1, row + 1))
-          {
-            this.Moves.add(new StepMove(column + 1, row + 1));
-          }
-        }
-
-        break;
-      case Board.COMPUTER_KING:
-        // Check for Jump Moves
-        this.Moves.add(GetNextJumpMove(board, column, row));
-        
-        // Only check for step-moves if we have no jump moves so far
-        if(this.Moves.size() == 0)
-        {
+          break;
+        case Board.HUMAN_KING:
           // Check Top Left
           if((column - 1 >= 0) && (row - 1 >= 0) && board.IsEmpty(column - 1, row - 1))
           {
@@ -111,9 +54,42 @@ class PossibleMovesCalculator
           {
             this.Moves.add(new StepMove(column + 1, row + 1));
           }
-        }
-        
-        break;      
+          break;
+        case Board.COMPUTER_MAN:
+          // Check Bottom Left
+          if((column - 1 >= 0) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column - 1, row + 1))
+          {
+            this.Moves.add(new StepMove(column - 1, row + 1));
+          }
+          // Check Bottom Right
+          if((column + 1 < Board.BOARD_WIDTH) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 1, row + 1))
+          {
+            this.Moves.add(new StepMove(column + 1, row + 1));
+          }
+          break;
+        case Board.COMPUTER_KING:
+          // Check Top Left
+          if((column - 1 >= 0) && (row - 1 >= 0) && board.IsEmpty(column - 1, row - 1))
+          {
+            this.Moves.add(new StepMove(column - 1, row - 1));
+          }
+          // Check Top Right
+          if((column + 1 < Board.BOARD_WIDTH) && (row - 1 >= 0) && board.IsEmpty(column + 1, row - 1))
+          {
+            this.Moves.add(new StepMove(column + 1, row - 1));
+          }
+          // Check Bottom Left
+          if((column - 1 >= 0) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column - 1, row + 1))
+          {
+            this.Moves.add(new StepMove(column - 1, row + 1));
+          }
+          // Check Bottom Right
+          if((column + 1 < Board.BOARD_WIDTH) && (row + 1 < Board.BOARD_HEIGHT) && board.IsEmpty(column + 1, row + 1))
+          {
+            this.Moves.add(new StepMove(column + 1, row + 1));
+          }
+          break;
+      }
     }
   }
     

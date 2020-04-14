@@ -218,7 +218,7 @@ class Board
     print(")\n");
     */
     
-    if(move instanceof StepMove)
+    if(move instanceof StepMove) //<>//
     {
       // Move the piece to the target position
       this.pieces[move.targetColumn][move.targetRow] = this.pieces[column][row];
@@ -236,34 +236,30 @@ class Board
     }
     else if(move instanceof JumpMove)
     {
-      JumpMove jumpMove = (JumpMove)move;       //<>//
+      int finalColumn = column;
+      int finalRow = row;
+      JumpMove jumpMove = (JumpMove)move;
+      
       do {
         // Mark the piece we are jumping over as empty
         this.pieces[jumpMove.takenColumn][jumpMove.takenRow] =  Board.EMPTY;
         // Move the piece to the target position (jumping over the taken piece)
-        this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = this.pieces[column][row];
+        this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = this.pieces[column][row]; //<>//
         // Mark the start-position as empty
         this.pieces[column][row] = Board.EMPTY;
         
         column = jumpMove.targetColumn;
         row = jumpMove.targetRow;
         jumpMove = jumpMove.nextJumpMove;      
-      } while(jumpMove.nextJumpMove != null);
+      } while(jumpMove != null);
 
-      // Mark the piece we are jumping over as empty
-      this.pieces[jumpMove.takenColumn][jumpMove.takenRow] =  Board.EMPTY;
-      // Move the piece to the target position (jumping over the taken piece)
-      this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = this.pieces[column][row];
-      // Mark the start-position as empty
-      this.pieces[column][row] = Board.EMPTY;
-      
-      if((this.pieces[jumpMove.targetColumn][jumpMove.targetRow] == Board.COMPUTER_MAN) && (move.targetRow == (Board.BOARD_HEIGHT -1)))
+      if((this.pieces[finalColumn][finalRow] == Board.COMPUTER_MAN) && (finalRow == (Board.BOARD_HEIGHT -1)))
       {
-        this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.COMPUTER_KING;
+        this.pieces[finalColumn][finalRow] = Board.COMPUTER_KING;
       }
-      else if((this.pieces[jumpMove.targetColumn][jumpMove.targetRow] == Board.HUMAN_MAN) && (jumpMove.targetRow == 0))
+      else if((this.pieces[finalColumn][finalRow] == Board.HUMAN_MAN) && (finalRow == 0))
       {
-        this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = Board.HUMAN_KING;
+        this.pieces[finalColumn][finalRow] = Board.HUMAN_KING;
       }
     }
   }

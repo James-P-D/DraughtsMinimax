@@ -1,16 +1,21 @@
+/***********************************************************
+ * Base Class for Move. Used by StepMove and JumpMove
+ ***********************************************************/  
+
 class Move
 {
-  int targetColumn;
-  int targetRow;
+  /***********************************************************
+   * Properties
+   ***********************************************************/  
+  public int targetColumn;
+  public int targetRow;
   
-  Move(int column, int row)
+  /***********************************************************
+   * Constructor
+   ***********************************************************/  
+  public Move(int column, int row)
   {
     this.targetColumn = column;
     this.targetRow = row;
-    
-    if(row < 0)
-    {
-      print("Here!"); //<>//
-    }
-  }
+  } //<>//
 }

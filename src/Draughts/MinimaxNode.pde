@@ -1,12 +1,18 @@
 class MinimaxNode
 {
-  ArrayList<MinimaxNode> childNodes;
-  int score;
-  Move move;
-  int row;
-  int column;
+  /***********************************************************
+   * Properties
+   ***********************************************************/  
+  public ArrayList<MinimaxNode> childNodes;
+  public int score;
+  public Move move;
+  public int row;
+  public int column;
   
-  MinimaxNode(Board board, int currentColumn, int currentRow, Move move, boolean humanPlayer, int depth)
+  /***********************************************************
+   * Constructor
+   ***********************************************************/  
+  public MinimaxNode(Board board, int currentColumn, int currentRow, Move move, boolean humanPlayer, int depth)
   {
     this.childNodes = new ArrayList<MinimaxNode>();
     this.column = currentColumn;
@@ -33,7 +39,6 @@ class MinimaxNode
           }          
         }
       }
-    }
-    
+    }    
   }
 }

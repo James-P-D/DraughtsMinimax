@@ -1,9 +1,15 @@
 class PossibleMovesCalculator
 {
+  /***********************************************************
+   * Properties
+   ***********************************************************/  
   private int initialColumn;
   private int initialRow;
   private ArrayList<Move> Moves;
   
+  /***********************************************************
+   * Constructor
+   ***********************************************************/  
   public PossibleMovesCalculator(Board board, int column, int row)
   {
     this.initialColumn = column;
@@ -93,6 +99,10 @@ class PossibleMovesCalculator
     }
   }
     
+  /***********************************************************
+   * GetNextJumpMove() method. Gets the next possible jump
+   * move if another once exists.
+   ***********************************************************/  
   private JumpMove GetNextJumpMove(Board board, int column, int row) 
   {
     switch(board.pieces[column][row])

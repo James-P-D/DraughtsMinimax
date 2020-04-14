@@ -4,7 +4,7 @@
 /***********************************************************
  * Constants
  ***********************************************************/
-static final int MAX_SEARCH_DEPTH = 6;
+static final int MAX_SEARCH_DEPTH = 2;
 
 static final int BOARD_LEFT_MARGIN = 75;
 static final int BOARD_TOP_MARGIN = 75;
@@ -341,18 +341,6 @@ void CalculateComputerMove()
 }
 
 /***********************************************************
- * Returns TRUE if x, y is over a particular cell
- ***********************************************************/
-//TODO: DO we need this?!?!?!?!?!?!??!?!?!?!?!?!??!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!??!??!?!?!?
-boolean OverSquare(int x, int y, int column, int row)
-{
-  return (x > (BOARD_LEFT_MARGIN + (column * CELL_WIDTH))) && 
-         (x < (BOARD_LEFT_MARGIN + ((column + 1) * CELL_WIDTH))) && 
-         (y > (BOARD_TOP_MARGIN + (row * CELL_HEIGHT))) && 
-         (y < (BOARD_TOP_MARGIN + ((row + 1) * CELL_HEIGHT)));
-}
-
-/***********************************************************
  * Draw Black Squares for Board
  ***********************************************************/
 void DrawBlackSquare(int column, int row)
@@ -484,10 +472,7 @@ void WriteLabel(String message)
   stroke(GRAY_COLOR);
   fill(GRAY_COLOR);
   rect(0, 0, (CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN), BOARD_TOP_MARGIN);
- 
- //surface.setSize((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN), (CELL_HEIGHT * Board.BOARD_HEIGHT) + (2 * BOARD_TOP_MARGIN)); 
- 
-  
+   
   // Add the text
   PFont f = createFont("SourceCodePro-Regular.ttf", 40);
   textFont(f);

@@ -24,8 +24,12 @@ class Board
   static final int COMPUTER_KING_SCORE = 200;
   static final int SAFE_SCALAR = 2;
 
-  int pieces[][];
+  public int pieces[][];
   
+  /***********************************************************
+   * Constructor
+   ***********************************************************/
+
   public Board()
   {
     pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
@@ -61,6 +65,9 @@ class Board
     this.Output();
   }
 
+  /***********************************************************
+   * Constructor
+   ***********************************************************/
   public Board(int initialPieces[][])
   {
     pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
@@ -74,16 +81,22 @@ class Board
     }
   }
   
+  /***********************************************************
+   * Clone method. Creates identical copy of Board.
+   ***********************************************************/  
   public Board Clone()
   {
     Board clonedBoard = new Board(this.pieces);
     return clonedBoard;
   }
-  
+
+  /***********************************************************
+   * Output method. Displays textual copy of board to stdout
+   ***********************************************************/
   public void Output()
   {
     print("+");
-    for(int column = 0; column < Board.BOARD_WIDTH; column++)
+    for(int column = 0; column < Board.BOARD_WIDTH * 3; column++)
     {
       print("-");
     }
@@ -97,19 +110,19 @@ class Board
         switch(this.pieces[column][row])
         {
           case COMPUTER_MAN :
-            print("c");
+            print(" c ");
             break;
           case COMPUTER_KING :
-            print("C");
+            print(" C ");
             break;
           case HUMAN_MAN :
-            print("h");
+            print(" h ");
             break;
           case HUMAN_KING :
-            print("H");
+            print(" H ");
             break;
           case EMPTY :
-            print(" ");
+            print("   ");
             break;        
         }
       }
@@ -117,14 +130,18 @@ class Board
     }
     
     print("+");
-    for(int column = 0; column < Board.BOARD_WIDTH; column++)
+    for(int column = 0; column < Board.BOARD_WIDTH * 3; column++)
     {
       print("-");
     }
     print("+\n");
     print("\n");
   }
-  
+
+  /***********************************************************
+   * IsSafe method. Checks to see if item at a given (column, row)
+   * is safe (I.E. has a wall or pieces along two adjacent sides)
+   ***********************************************************/
   private boolean IsSafe(int column, int row)
   {  
     if((column == 0) || (column == BOARD_WIDTH - 1) || // If piece is against either vertical side of board..
@@ -166,21 +183,38 @@ class Board
     return false;
   }
   
+  /***********************************************************
+   * IsHuman() method. Returns true if piece at (column, row)
+   * is human (man or king)
+   ***********************************************************/
   private boolean IsHuman(int column, int row)
   {
     return (this.pieces[column][row] == HUMAN_MAN) || (this.pieces[column][row] == HUMAN_KING);
   }
   
+  /***********************************************************
+   * IsComputer() method. Returns true if piece at (column, row)
+   * is computer (man or king)
+   ***********************************************************/
   private boolean IsComputer(int column, int row)
   {
     return (this.pieces[column][row] == COMPUTER_MAN) || (this.pieces[column][row] == COMPUTER_KING);
   }
   
+  /***********************************************************
+   * IsEmpty() method. Returns true if piece at (column, row)
+   * is neither human or computer piece
+   ***********************************************************/
   private boolean IsEmpty(int column, int row)
   {
     return (this.pieces[column][row] == EMPTY);
   }
-  
+    
+  /***********************************************************
+   * CalculateScore() method. Calculates the value of a board.
+   * Values of pieces is taken in to account, with kings valued
+   * more highly than men, and with 'safe' pieces also considered.
+   ***********************************************************/
   private int CalculateScore()
   {
     int totalScore = 0;
@@ -209,20 +243,12 @@ class Board
     return totalScore;
   }
   
+  /***********************************************************
+   * ApplyMove() method. Applies a given move to the piece at
+   * position (column, row)
+   ***********************************************************/
   private void ApplyMove(int column, int row, Move move)
-  { //<>//
-    /*
-    print("ApplyMove(");
-    print(column);
-    print(", ");
-    print(row);
-    print(") - (");
-    print(move.targetColumn);
-    print(", ");
-    print(move.targetRow);
-    print(")\n");
-    */
-    
+  {     //<>//
     if(move instanceof StepMove)
     {
       // Move the piece to the target position

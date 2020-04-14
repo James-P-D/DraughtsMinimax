@@ -1,8 +1,14 @@
 class MinimaxTree
 {  
+  /***********************************************************
+   * Properties
+   ***********************************************************/  
   public ArrayList<MinimaxNode> childNodes;
   
-  MinimaxTree(Board board)
+  /***********************************************************
+   * Constructor
+   ***********************************************************/  
+  public MinimaxTree(Board board)
   {
     this.childNodes = new ArrayList<MinimaxNode>();
     

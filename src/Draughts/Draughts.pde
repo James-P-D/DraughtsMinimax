@@ -246,8 +246,10 @@ void mousePressed()
           if(possibleMove instanceof StepMove)
           {
             print("Move: ");
-          } else {
+          } else if(possibleMove instanceof JumpMove) {
             print("Jump: ");
+          } else {
+            print("Unknown! ");
           }
           print(possibleMove.targetColumn);
           print(", ");

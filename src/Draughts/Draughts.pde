@@ -295,11 +295,16 @@ void mouseReleased()
           {
             JumpMove initialJumpMove = (JumpMove)possibleMovesCalculator.Moves.get(i);
             JumpMove jumpMove = (JumpMove)possibleMovesCalculator.Moves.get(i);
-            do {              
+            int finalTargetColumn = jumpMove.targetColumn; 
+            int finalTargetRow = jumpMove.targetRow; 
+            do {
+              finalTargetColumn = jumpMove.targetColumn; 
+              finalTargetRow = jumpMove.targetRow; 
+              
               jumpMove = jumpMove.nextJumpMove;
-            } while(jumpMove.nextJumpMove != null);
+            } while(jumpMove != null);
             
-            if((column == jumpMove.targetColumn) && (row == jumpMove.targetRow))
+            if((column == finalTargetColumn) && (row == finalTargetRow))
             {
               mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, initialJumpMove);
                     

@@ -55,8 +55,8 @@ class Board
     }
     
     //this.pieces[7][0]=COMPUTER_MAN;
-    //this.pieces[2][5]=COMPUTER_MAN;
-    //this.pieces[0][7]=HUMAN_MAN;
+    //this.pieces[0][7]=COMPUTER_KING;
+    //this.pieces[1][6]=HUMAN_MAN;
     //this.pieces[2][7]=HUMAN_MAN;
     this.Output();
   }
@@ -243,7 +243,7 @@ class Board
     {
       int finalColumn = column;
       int finalRow = row;
-      JumpMove jumpMove = (JumpMove)move; //<>//
+      JumpMove jumpMove = (JumpMove)move;
       
       do {
         // Mark the piece we are jumping over as empty
@@ -251,7 +251,7 @@ class Board
         // Move the piece to the target position (jumping over the taken piece)
         this.pieces[jumpMove.targetColumn][jumpMove.targetRow] = this.pieces[finalColumn][finalRow];
         // Mark the start-position as empty
-        this.pieces[column][row] = Board.EMPTY;
+        this.pieces[finalColumn][finalRow] = Board.EMPTY;
         
         finalColumn = jumpMove.targetColumn;
         finalRow = jumpMove.targetRow;

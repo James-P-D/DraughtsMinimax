@@ -2,11 +2,10 @@
 // Tested against Processing v3.5.3
 
 // TODO
-// * Threading (Do we need this? Yes, otherwise if human takes piece and then computer immediately takes a piece, it isn't obvious what is happening)
 // * Actual choosing of best move
 // * Detect win/draw
 // * Start new game
-
+// * Update CalculateScore to take into account user winning by forcing opponent into position where there are no possible moves
 /***********************************************************
  * Constants
  ***********************************************************/

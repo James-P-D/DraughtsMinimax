@@ -39,6 +39,6 @@ class MinimaxNode
           }          
         }
       }
-    }    
+    }
   }
 }

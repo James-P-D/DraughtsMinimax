@@ -1,10 +1,16 @@
 // Draughts Game using Minimax
 // Tested against Processing v3.5.3
 
+// TODO
+// * Threading (Do we need this?)
+// * Actual choosing of best move
+// * Detect win/draw
+// * Start new game
+
 /***********************************************************
  * Constants
  ***********************************************************/
-static final int MAX_SEARCH_DEPTH = 2;
+static final int MAX_SEARCH_DEPTH = 6;
 
 static final int BOARD_LEFT_MARGIN = 75;
 static final int BOARD_TOP_MARGIN = 75;
@@ -30,7 +36,7 @@ final color DARK_BLUE_COLOR = color(0, 0, 126);
 final color DARK_YELLOW_COLOR = color(126, 126, 0);
 
 final color BOARD_CELL_COLOR_1 = WHITE_COLOR;
-final color BOARD_CELL_COLOR_2 = LIGHT_GRAY_COLOR;//BLACK_COLOR;
+final color BOARD_CELL_COLOR_2 = LIGHT_GRAY_COLOR;
 final color COMPUTER_MAN_COLOR = BLACK_COLOR;
 final color COMPUTER_KING_COLOR = BLACK_COLOR;
 final color HUMAN_MAN_COLOR = WHITE_COLOR;
@@ -62,7 +68,7 @@ void setup()
 {
   // Form width should be (CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN)
   // Form height should be (CELL_HEIGHT * Board.BOARD_HEIGHT) + (2 * BOARD_TOP_MARGIN)
-  // size() doesn't allow anything other than integer literals for paramters, so we
+  // size() doesn't allow anything other than integer literals for parameters, so we
   // have to use surface.setSize() instead!
   //size(800, 800);
   surface.setSize((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN), (CELL_HEIGHT * Board.BOARD_HEIGHT) + (2 * BOARD_TOP_MARGIN)); 
@@ -217,6 +223,7 @@ void DrawBoard()
  ***********************************************************/
 void mousePressed() 
 {
+  print_("Start mousePressed()\n");
   if(this.humanTurn) 
   {
     noLoop();
@@ -254,6 +261,7 @@ void mousePressed()
     
     loop();
   }
+  print_("Done mousePressed()\n");
 }
 
 /***********************************************************
@@ -263,6 +271,7 @@ void mousePressed()
  ***********************************************************/
 void mouseReleased()
 {
+  print_("Start mouseReleased()\n");
   if(this.humanTurn) 
   {
     if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&
@@ -322,6 +331,7 @@ void mouseReleased()
   
   this.humanMovingPieceColumn = -1;
   this.humanMovingPieceRow = -1;
+  print_("Done mouseReleased()\n");
 }
 
 /***********************************************************
@@ -329,15 +339,18 @@ void mouseReleased()
  ***********************************************************/
 void CalculateComputerMove()
 {
-  print("Start calculating\n");
-  this.mainBoard.Output();
+  print_("Start calculating\n");
+  //this.mainBoard.Output();
   
   MinimaxTree minimaxTree = new MinimaxTree(this.mainBoard);
   this.mainBoard.ApplyMove(minimaxTree.childNodes.get(0).column, minimaxTree.childNodes.get(0).row, minimaxTree.childNodes.get(0).move);
-  this.mainBoard.Output();
-  print("Done calculating\n");
+  //this.mainBoard.Output();
+  print_("Done calculating\n");
   //this.computerProcsesing = false;
+  print_("Start GC\n");
   System.gc();
+  print_("Done GC\n");
+  print("\n");
 }
 
 /***********************************************************
@@ -479,4 +492,9 @@ void WriteLabel(String message)
   textAlign(CENTER);
   fill(BLACK_COLOR);
   text(message, ((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN)) / 2, 50);
+}
+
+void print_(String message)
+{
+  print(nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2) + " - " + message);
 }

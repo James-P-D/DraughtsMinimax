@@ -1,5 +1,5 @@
 # DraughtsMinimax
-A Processing implementation of Draughts using Minimax
+A Processing implementation of Draughts (Checkers) using Minimax
 
 ![Screenshot](https://github.com/James-P-D/DraughtsMinimax/blob/master/Screenshot.gif)
 
@@ -9,7 +9,7 @@ A Processing implementation of Draughts using Minimax
 
 ## Rules
 
-Computer always plays as Black, whilst Human always plays as Yellow, with the player that moves first toggling between games. Initially, the Human pieces can only move diagonally upwards on the board, providing the next-closest diagonal cell is empty. If the next-closest diagonal cell contains a rival piece, and the next-closest diagonal cell is empty, the player can jump over the opponent and the opponent's piece is removed from the board. The game continues oscellating between the two players until one player sucessfully removes all the openent pieces.
+Computer always plays as Black, whilst Human always plays as Yellow, with the player that moves first toggling between games. Initially, the Human pieces can only move diagonally upwards on the board, providing the next-closest diagonal cell is empty. If the next-closest diagonal cell contains a rival piece, and the next-closest diagonal cell is empty, the player can jump over the opponent and the opponent's piece is removed from the board. The game continues oscellating between the two players until one player sucessfully removes all the opponent pieces.
 
 In addition to these basic rules, there are two other details regarding the game of Draughts that some users, including the programmer, initially forget.
 

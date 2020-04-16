@@ -2,7 +2,7 @@
 // Tested against Processing v3.5.3
 
 // TODO
-// * Threading (Do we need this?)
+// * Threading (Do we need this? Yes, otherwise if human takes piece and then computer immediately takes a piece, it isn't obvious what is happening)
 // * Actual choosing of best move
 // * Detect win/draw
 // * Start new game
@@ -56,7 +56,9 @@ boolean humanGoesFirst;
 boolean humanTurn;
 int humanMovingPieceColumn;
 int humanMovingPieceRow;
-
+boolean computerProcessing = false;
+boolean computerProcessingComplete = false;
+MinimaxTree minimaxTree;
 ArrayList<PositionTuple> possibleMovePositions;
 PossibleMovesCalculator possibleMovesCalculator;
 
@@ -206,10 +208,27 @@ void DrawBoard()
   // best possible move
   if(!humanTurn)
   {
-    //computerProcsesing = true;
-    CalculateComputerMove();
-    //noLoop();
-    humanTurn = true;
+    if(frameCount % 50 == 0)
+    {
+      if(!this.computerProcessing)
+      {
+        print_("Starting thread...\n");
+        this.computerProcessing = true;
+        this.computerProcessingComplete = false;
+        thread("CalculateComputerMove");
+      }
+      else if(this.computerProcessingComplete)
+      {
+        this.computerProcessing = false;
+        print_("Thread has finished!\n");
+        this.mainBoard.ApplyMove(minimaxTree.childNodes.get(0).column, minimaxTree.childNodes.get(0).row, minimaxTree.childNodes.get(0).move); //<>//
+        humanTurn = true;
+      }
+      else
+      {
+        print_("Waiting on thread...\n");        
+      }
+    }
   }
 }
 
@@ -339,17 +358,16 @@ void mouseReleased()
  ***********************************************************/
 void CalculateComputerMove()
 {
-  print_("Start calculating\n");
-  //this.mainBoard.Output();
-  
-  MinimaxTree minimaxTree = new MinimaxTree(this.mainBoard);
-  this.mainBoard.ApplyMove(minimaxTree.childNodes.get(0).column, minimaxTree.childNodes.get(0).row, minimaxTree.childNodes.get(0).move);
-  //this.mainBoard.Output();
+  print_("Start calculating\n");  
+  this.minimaxTree = new MinimaxTree(this.mainBoard);    
   print_("Done calculating\n");
-  //this.computerProcsesing = false;
+  
   print_("Start GC\n");
   System.gc();
   print_("Done GC\n");
+  
+  // Don't turn off this.computerProcessing here! That needs to be done in the Draw() method!
+  this.computerProcessingComplete = true;
   print("\n");
 }
 

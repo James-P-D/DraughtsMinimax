@@ -17,5 +17,5 @@ class Move
   {
     this.targetColumn = column;
     this.targetRow = row;
-  } //<>//
+  }
 }

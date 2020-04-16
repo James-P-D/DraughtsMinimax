@@ -9,7 +9,7 @@ A Processing implementation of Draughts (Checkers) using Minimax
 
 ## Rules
 
-Computer always plays as Black, whilst Human always plays as Yellow, with the player that moves first toggling between games. Initially, the Human pieces can only move diagonally upwards on the board, providing the next-closest diagonal cell is empty. If the next-closest diagonal cell contains a rival piece, and the next-closest diagonal cell is empty, the player can jump over the opponent and the opponent's piece is removed from the board. The game continues oscellating between the two players until one player sucessfully removes all the opponent pieces.
+Computer always plays as Black, whilst Human always plays as Yellow, with the player that moves first toggling between games. Initially, the Human pieces can only move diagonally upwards on the board, providing the next-closest diagonal cell is empty. If the next-closest diagonal cell contains a rival piece, and the next-closest diagonal cell is empty, the player can jump over the opponent and the opponent's piece is removed from the board. The game continues oscellating between the two players until one player sucessfully removes all the opponent pieces, or the opponent is unable to move.
 
 In addition to these basic rules, there are two other details regarding the game of Draughts that some users, including the programmer, initially forget.
 
@@ -21,7 +21,7 @@ Secondly, when jumping over opponents, it is possible to 'chain' your move, and 
 
 ![Screenshot](https://github.com/James-P-D/DraughtsMinimax/blob/master/Chaining.gif)
 
-Finally, please note that there are many different variations of the game of Draughts. Some games allow 'Kings' to take pieces in any diagonal direction, but can only move to unocupied spaces in one direction. Other variations allow 'Kings' to move any number of places diagonally providing the path is clear, meaning the piece can move from one corner of the board to the opposite corner in a single step, much like a Queen in Chess. In one (frankly insane) variation, captured pieces are left on the board but are now unmoveable and cannot be jumped over. There's even a variation where the whole board 'wraps' in all four directions so it possible for pieces to move leftwards across the board and then suddenly appear on the right-hand side of the board.
+Finally, please note that there are many different variations of the game of Draughts. Some games allow 'Kings' to take pieces in any diagonal direction, but can only move to unoccupied spaces in one direction. Other variations allow 'Kings' to move any number of places diagonally providing the path is clear, meaning the piece can move from one corner of the board to the opposite corner in a single step, much like a Queen in Chess. In one (frankly insane) variation, captured pieces are left on the board but are now unmoveable and cannot be jumped over. There's even a variation where the whole board 'wraps' in all four directions so it possible for pieces to move leftwards across the board and then suddenly appear on the right-hand side of the board.
 
 Basically what I'm saying is, if you don't like the choice of rules, don't email me, just fork the repository and keep it to yourself. :)
 

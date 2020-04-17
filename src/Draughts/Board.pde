@@ -49,6 +49,10 @@ class Board
         }
       }
     }
+    
+    //this.pieces[7][0] = COMPUTER_MAN;
+    //this.pieces[5][2] = HUMAN_MAN;
+    //this.pieces[7][2] = HUMAN_MAN;
   }
 
   /***********************************************************

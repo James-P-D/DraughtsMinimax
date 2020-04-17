@@ -45,7 +45,6 @@ final String HUMAN_TURN_MESSAGE = "HUMAN TURN";
 final String COMPUTER_TURN_MESSAGE = "COMPUTER TURN";
 final String HUMAN_WINS_MESSAGE = "HUMAN WINS!";
 final String COMPUTER_WINS_MESSAGE = "COMPUTER WINS!";
-final String DRAW_MESSAGE = "DRAW";
 
 /***********************************************************
  * Global Variables (yuck!)
@@ -53,6 +52,8 @@ final String DRAW_MESSAGE = "DRAW";
 Board mainBoard;
 boolean humanGoesFirst;
 boolean humanTurn;
+boolean humanHasWon;
+boolean computerHasWon;
 int humanMovingPieceColumn;
 int humanMovingPieceRow;
 boolean computerProcessing = false;
@@ -77,14 +78,28 @@ void setup()
   surface.setLocation(0, 0);
   
   background(GRAY_COLOR);
+  this.humanGoesFirst = false;
+  
+  this.InitialiseGame();  
+  this.possibleMovePositions = new ArrayList<PositionTuple>();
+}
+
+/***********************************************************
+ * InitialiseGame() - Create the board and set the boolean
+ * flags. This will be called on startup, or whenever someone
+ * wins the game and the user wants to play again
+ ***********************************************************/
+
+void InitialiseGame()
+{
   this.mainBoard = new Board();
   
-  this.humanGoesFirst = true;
+  this.humanGoesFirst = !this.humanGoesFirst; // If human went first last time, computer goes first this time, and vice-versa.
   this.humanTurn = this.humanGoesFirst;
   this.humanMovingPieceColumn = -1;
   this.humanMovingPieceRow = -1;
-  
-  this.possibleMovePositions = new ArrayList<PositionTuple>();
+  this.humanHasWon = false;
+  this.computerHasWon = false;
 }
 
 /***********************************************************
@@ -113,15 +128,29 @@ void DrawBoard()
        BOARD_TOP_MARGIN,
        CELL_WIDTH * Board.BOARD_WIDTH,
        CELL_HEIGHT * Board.BOARD_HEIGHT);
-  
+
   // First update the labels
-  if(this.humanTurn)
+  if(this.humanHasWon || this.computerHasWon)
   {
-    this.WriteLabel(HUMAN_TURN_MESSAGE);
+    if(this.humanHasWon) 
+    {
+      this.WriteLabel(HUMAN_WINS_MESSAGE);
+    }
+    if(this.computerHasWon) 
+    {
+      this.WriteLabel(COMPUTER_WINS_MESSAGE);
+    }
   }
   else
   {
-    this.WriteLabel(COMPUTER_TURN_MESSAGE);
+    if(this.humanTurn)
+    {
+      this.WriteLabel(HUMAN_TURN_MESSAGE);
+    }
+    else
+    {
+      this.WriteLabel(COMPUTER_TURN_MESSAGE);
+    }
   }
 
   stroke(BOARD_CELL_COLOR_1);
@@ -184,6 +213,11 @@ void DrawBoard()
     } //<>//
   } //<>//
 
+  if(this.humanHasWon || this.computerHasWon)
+  {
+    return;
+  }
+
   // Finally, for the currently moving human piece, draw the item at the current mouse position
   if((this.humanMovingPieceColumn != -1) && (this.humanMovingPieceRow != -1))
   {
@@ -222,6 +256,12 @@ void DrawBoard()
         print_("Thread has finished!\n");
         this.mainBoard.ApplyMove(minimaxTree.childNodes.get(0).column, minimaxTree.childNodes.get(0).row, minimaxTree.childNodes.get(0).move); //<>//
         humanTurn = true;
+        
+        BoardValueCalculator boardValueCalculator = new BoardValueCalculator(this.mainBoard);
+        if(!boardValueCalculator.humanCanMove)
+        {
+          this.computerHasWon = true;
+        }
       }
       else
       {
@@ -332,23 +372,31 @@ void mouseReleased()
               mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, initialJumpMove);
                     
               this.humanTurn = false;
+              break;
             }
           }
         }
         possibleMovesCalculator = null;
       }
+            
+      // If it's no longer the human's turn, then we did make a valid move.
+      if(!humanTurn)
+      {
+        this.possibleMovePositions.clear(); //<>//
+        BoardValueCalculator boardValueCalculator = new BoardValueCalculator(this.mainBoard);
+        if(!boardValueCalculator.computerCanMove)
+        {
+          this.humanHasWon = true;
+        }
+      }
       
-      loop();
+      loop();      
     }
-  }
-  
-  if(!humanTurn)
-  {
-    this.possibleMovePositions.clear();
   }
   
   this.humanMovingPieceColumn = -1;
   this.humanMovingPieceRow = -1;
+  
   print_("Done mouseReleased()\n");
 }
 
@@ -511,6 +559,9 @@ void WriteLabel(String message)
   text(message, ((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN)) / 2, 50);
 }
 
+/***********************************************************
+ * Write to stdout with timestamp
+ ***********************************************************/
 void print_(String message)
 {
   print(nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2) + " - " + message);

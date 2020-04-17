@@ -16,28 +16,40 @@ class MinimaxTree
     {    
       for(int row = 0; row < Board.BOARD_HEIGHT; row++)
       {
+        // Remember, we only care about computer pieces at the top of the tree. As we start building the whole
+        // tree, we can start switching between the two players.
         if(board.IsComputer(column, row))
         {
           PossibleMovesCalculator possibleMovesCalculator = new PossibleMovesCalculator(board, column, row);
           
           for(int i=0; i<possibleMovesCalculator.Moves.size(); i++)
           {
-            /*
-            print(column);
-            print(", ");
-            print(row);
-            print(" -> ");
-            
-            print(possibleMovesCalculator.Moves.get(i).targetColumn);
-            print(", ");
-            print(possibleMovesCalculator.Moves.get(i).targetRow);
-            print("\n");
-            */
+            // Note that since we only ever use MinimaxTree when it is the computer's turn, the parameter for
+            // specifying the 'humanPlayer' parameter, can always be set to 'false' to begin with
             MinimaxNode childNode = new MinimaxNode(board.Clone(), column, row, possibleMovesCalculator.Moves.get(i), false, 0);
             this.childNodes.add(childNode);
           }          
         }
       }
     } 
+  }
+  
+  /***********************************************************
+   * GetBestMove() method. Returns the best move.
+   ***********************************************************/
+  public MinimaxNode GetBestMove()
+  {
+    int bestScore = 0;
+    int bestMove = 0;
+    for(int i = 0; i < this.childNodes.size(); i++)
+    {
+      if(this.childNodes.get(i).score > bestScore)
+      {
+        bestScore = this.childNodes.get(i).score;
+        bestMove = i;
+      }
+    }
+    
+    return this.childNodes.get(bestMove);
   }
 }

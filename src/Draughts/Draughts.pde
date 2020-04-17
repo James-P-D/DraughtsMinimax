@@ -3,9 +3,6 @@
 
 // TODO
 // * Actual choosing of best move
-// * Detect win/draw
-// * Start new game
-// * Update CalculateScore to take into account user winning by forcing opponent into position where there are no possible moves
 /***********************************************************
  * Constants
  ***********************************************************/
@@ -254,7 +251,8 @@ void DrawBoard()
       {
         this.computerProcessing = false;
         print_("Thread has finished!\n");
-        this.mainBoard.ApplyMove(minimaxTree.childNodes.get(0).column, minimaxTree.childNodes.get(0).row, minimaxTree.childNodes.get(0).move); //<>//
+        MinimaxNode bestMoveNode = minimaxTree.GetBestMove();
+        this.mainBoard.ApplyMove(bestMoveNode.column, bestMoveNode.row, bestMoveNode.move); //<>//
         humanTurn = true;
         
         BoardValueCalculator boardValueCalculator = new BoardValueCalculator(this.mainBoard);

@@ -1,14 +1,22 @@
 class BoardValueCalculator
 {
+  /***********************************************************
+   * Properties
+   ***********************************************************/  
   public int value;
   public boolean humanCanMove;
   public boolean computerCanMove;
   
-  // Scores for pieces. Negative for human player, positive for 
-  // Computer. Values will be multiplied by Scalar if they are
-  // 'safe' (against a wall or proected by teammates)
+  /***********************************************************
+   * Constants
+   * Scores for pieces. Negative for human player, positive for 
+   * Computer. Values will be multiplied by Scalar if they are
+   * 'safe' (against a wall or proected by teammates)
+   ***********************************************************/
+  static final int HUMAN_WINS = -1000000;
   static final int HUMAN_MAN_SCORE = -100;
   static final int HUMAN_KING_SCORE = -200;
+  static final int COMPUTER_WINS = 1000000;
   static final int COMPUTER_MAN_SCORE = 100;
   static final int COMPUTER_KING_SCORE = 200;
   static final int SAFE_SCALAR = 2;

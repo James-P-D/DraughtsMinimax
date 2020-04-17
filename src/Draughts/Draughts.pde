@@ -282,7 +282,12 @@ void DrawBoard()
 void mousePressed() 
 {
   print_("Start mousePressed()\n");
-  if(this.humanTurn) 
+  
+  if((mouseY > 0) && (mouseY < BOARD_TOP_MARGIN) && (this.humanHasWon || this.computerHasWon))
+  {
+    this.InitialiseGame();
+  }
+  else if(this.humanTurn) 
   {
     noLoop();
     if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&

@@ -18,9 +18,9 @@ class MinimaxNode
     this.column = currentColumn;
     this.row = currentRow;
     this.move = move;
-    
+
     board.ApplyMove(currentColumn, currentRow, move);
-    
+        
     BoardValueCalculator boardValueCalculator = new BoardValueCalculator(board); 
     if(!boardValueCalculator.humanCanMove)
     {
@@ -34,11 +34,11 @@ class MinimaxNode
     {
       if(humanPlayer)
       {
-        this.score = boardValueCalculator.value + depth;
+        this.score = boardValueCalculator.value;
       }
       else
       {
-        this.score = boardValueCalculator.value - depth;
+        this.score = boardValueCalculator.value;
       }
     }
     else
@@ -47,15 +47,18 @@ class MinimaxNode
       {
         for(int row = 0; row < Board.BOARD_HEIGHT; row++)
         {
-          boolean nextPlayerHuman = !humanPlayer;
-          if((nextPlayerHuman && board.IsHuman(column, row)) ||
-             (!nextPlayerHuman && board.IsComputer(column, row)))
+          if(!board.IsEmpty(column, row))
           {
-            PossibleMovesCalculator possibleMovesCalculator = new PossibleMovesCalculator(board, column, row);
-            for(int i=0; i<possibleMovesCalculator.Moves.size(); i++)
+            boolean nextPlayerHuman = !humanPlayer;
+            if((nextPlayerHuman && board.IsHuman(column, row)) ||
+              ((!nextPlayerHuman) && board.IsComputer(column, row)))
             {
-              MinimaxNode childNode = new MinimaxNode(board.Clone(), column, row, possibleMovesCalculator.Moves.get(i), nextPlayerHuman, depth + 1);
-              this.childNodes.add(childNode);
+              PossibleMovesCalculator possibleMovesCalculator = new PossibleMovesCalculator(board, column, row);
+              for(int i = 0; i < possibleMovesCalculator.Moves.size(); i++)
+              {
+                MinimaxNode childNode = new MinimaxNode(board.Clone(), column, row, possibleMovesCalculator.Moves.get(i), nextPlayerHuman, depth + 1);
+                this.childNodes.add(childNode);
+              }
             }
           }
         }
@@ -63,8 +66,8 @@ class MinimaxNode
       
       if(humanPlayer)
       {
-        this.score = 0;
-        for(int i = 0; i< this.childNodes.size(); i++)
+        this.score = Integer.MIN_VALUE;
+        for(int i = 0; i < this.childNodes.size(); i++)
         {
           if(this.childNodes.get(i).score > this.score)
           {
@@ -74,12 +77,12 @@ class MinimaxNode
       }
       else
       {
-        this.score = 0;
-        for(int i = 0; i< this.childNodes.size(); i++)
+        this.score = Integer.MAX_VALUE;
+        for(int i = 0; i < this.childNodes.size(); i++)
         {
           if(this.childNodes.get(i).score < this.score)
           {
-            this.score = this.childNodes.get(i).score; 
+            this.score = this.childNodes.get(i).score;
           }
         }
       }

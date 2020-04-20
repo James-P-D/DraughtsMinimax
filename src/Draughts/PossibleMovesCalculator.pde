@@ -3,8 +3,6 @@ class PossibleMovesCalculator
   /***********************************************************
    * Properties
    ***********************************************************/  
-  private int initialColumn;
-  private int initialRow;
   private ArrayList<Move> Moves;
   
   /***********************************************************
@@ -12,8 +10,6 @@ class PossibleMovesCalculator
    ***********************************************************/  
   public PossibleMovesCalculator(Board board, int column, int row)
   {
-    this.initialColumn = column;
-    this.initialRow = row;
     this.Moves = new ArrayList<Move>();
 
     // TODO: Do we want to only check for Jump moves? Hmm. have a think about MiniMax planning...

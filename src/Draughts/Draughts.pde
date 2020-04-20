@@ -2,11 +2,12 @@
 // Tested against Processing v3.5.3
 
 // TODO
-// * Actual choosing of best move
+// * Make jump moves optional?
+
 /***********************************************************
  * Constants
  ***********************************************************/
-static final int MAX_SEARCH_DEPTH = 6;
+static final int MAX_SEARCH_DEPTH = 5;
 
 static final int BOARD_LEFT_MARGIN = 75;
 static final int BOARD_TOP_MARGIN = 75;
@@ -89,7 +90,9 @@ void setup()
 
 void InitialiseGame()
 {
+  print("-------- New Game --------\n");
   this.mainBoard = new Board();
+  this.mainBoard.Output();
   
   this.humanGoesFirst = !this.humanGoesFirst; // If human went first last time, computer goes first this time, and vice-versa.
   this.humanTurn = this.humanGoesFirst;
@@ -207,8 +210,8 @@ void DrawBoard()
             break;
         }
       }
-    } //<>//
-  } //<>//
+    }
+  }
 
   if(this.humanHasWon || this.computerHasWon)
   {
@@ -242,7 +245,7 @@ void DrawBoard()
     {
       if(!this.computerProcessing)
       {
-        print_("Starting thread...\n");
+        print("Starting thread for calculating Computer move...\n");
         this.computerProcessing = true;
         this.computerProcessingComplete = false;
         thread("CalculateComputerMove");
@@ -250,20 +253,26 @@ void DrawBoard()
       else if(this.computerProcessingComplete)
       {
         this.computerProcessing = false;
-        print_("Thread has finished!\n");
+        print("Computer move calculation thread has finished\n");
         MinimaxNode bestMoveNode = minimaxTree.GetBestMove();
+
+        print("Applying Computer move at position (" + bestMoveNode.column + ", " + bestMoveNode.row + ")\n");
         this.mainBoard.ApplyMove(bestMoveNode.column, bestMoveNode.row, bestMoveNode.move); //<>//
-        humanTurn = true;
+        mainBoard.Output();
         
         BoardValueCalculator boardValueCalculator = new BoardValueCalculator(this.mainBoard);
         if(!boardValueCalculator.humanCanMove)
         {
           this.computerHasWon = true;
         }
+        else
+        {
+        humanTurn = true;
+        }
       }
       else
       {
-        print_("Waiting on thread...\n");        
+        print("Waiting for thread to complete...\n");        
       }
     }
   }
@@ -279,8 +288,6 @@ void DrawBoard()
  ***********************************************************/
 void mousePressed() 
 {
-  print_("Start mousePressed()\n");
-  
   if((mouseY > 0) && (mouseY < BOARD_TOP_MARGIN) && (this.humanHasWon || this.computerHasWon))
   {
     this.InitialiseGame();
@@ -322,7 +329,6 @@ void mousePressed()
     
     loop();
   }
-  print_("Done mousePressed()\n");
 }
 
 /***********************************************************
@@ -332,7 +338,6 @@ void mousePressed()
  ***********************************************************/
 void mouseReleased()
 {
-  print_("Start mouseReleased()\n");
   if(this.humanTurn) 
   {
     if((mouseX > BOARD_LEFT_MARGIN) && (mouseX < BOARD_LEFT_MARGIN + (CELL_WIDTH * Board.BOARD_WIDTH)) &&
@@ -351,7 +356,9 @@ void mouseReleased()
             StepMove possibleMove = (StepMove)possibleMovesCalculator.Moves.get(i);
             if((column == possibleMove.targetColumn) && (row == possibleMove.targetRow))
             {
+              print("Applying Human move at position (" + this.humanMovingPieceColumn + ", " + this.humanMovingPieceRow + ")\n");
               mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, possibleMove);
+              mainBoard.Output();
                     
               this.humanTurn = false;
               break;
@@ -372,7 +379,9 @@ void mouseReleased()
             
             if((column == finalTargetColumn) && (row == finalTargetRow))
             {
+              print("Applying Human move at position (" + this.humanMovingPieceColumn + ", " + this.humanMovingPieceRow + ")\n");
               mainBoard.ApplyMove(this.humanMovingPieceColumn, this.humanMovingPieceRow, initialJumpMove);
+              mainBoard.Output();
                     
               this.humanTurn = false;
               break;
@@ -385,7 +394,7 @@ void mouseReleased()
       // If it's no longer the human's turn, then we did make a valid move.
       if(!humanTurn)
       {
-        this.possibleMovePositions.clear(); //<>//
+        this.possibleMovePositions.clear();
         BoardValueCalculator boardValueCalculator = new BoardValueCalculator(this.mainBoard);
         if(!boardValueCalculator.computerCanMove)
         {
@@ -399,8 +408,6 @@ void mouseReleased()
   
   this.humanMovingPieceColumn = -1;
   this.humanMovingPieceRow = -1;
-  
-  print_("Done mouseReleased()\n");
 }
 
 /***********************************************************
@@ -408,17 +415,13 @@ void mouseReleased()
  ***********************************************************/
 void CalculateComputerMove()
 {
-  print_("Start calculating\n");  
   this.minimaxTree = new MinimaxTree(this.mainBoard);    
-  print_("Done calculating\n");
-  
-  print_("Start GC\n");
+
+  // TODO: Do we still need this here?
   System.gc();
-  print_("Done GC\n");
   
   // Don't turn off this.computerProcessing here! That needs to be done in the Draw() method!
   this.computerProcessingComplete = true;
-  print("\n");
 }
 
 /***********************************************************
@@ -560,12 +563,4 @@ void WriteLabel(String message)
   textAlign(CENTER);
   fill(BLACK_COLOR);
   text(message, ((CELL_WIDTH * Board.BOARD_WIDTH) + (2 * BOARD_LEFT_MARGIN)) / 2, 50);
-}
-
-/***********************************************************
- * Write to stdout with timestamp
- ***********************************************************/
-void print_(String message)
-{
-  print(nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2) + " - " + message);
 }

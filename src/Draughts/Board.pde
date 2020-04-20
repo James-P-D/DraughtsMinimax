@@ -1,5 +1,8 @@
 class Board 
 {
+  /***********************************************************
+   * Constants
+   ***********************************************************/  
   // 8x8 board
   static final int BOARD_WIDTH = 8;
   static final int BOARD_HEIGHT = 8;
@@ -14,14 +17,16 @@ class Board
   static final int COMPUTER_KING = 2;
   static final int HUMAN_MAN = 3;
   static final int HUMAN_KING = 4;
-  
- 
+   
+  /***********************************************************
+   * Properties
+   ***********************************************************/  
   public int pieces[][];
   
   /***********************************************************
-   * Constructor
+   * Constructor - Creates board with default rows of human
+   * and computer pieces
    ***********************************************************/
-
   public Board()
   {
     pieces = new int[BOARD_WIDTH][BOARD_HEIGHT];
@@ -49,14 +54,11 @@ class Board
         }
       }
     }
-    
-    //this.pieces[7][0] = COMPUTER_MAN;
-    //this.pieces[5][2] = HUMAN_MAN;
-    //this.pieces[7][2] = HUMAN_MAN;
   }
 
   /***********************************************************
-   * Constructor
+   * Constructor - Creates a new board with initial pieces
+   * (used for cloning boards)
    ***********************************************************/
   public Board(int initialPieces[][])
   {
@@ -79,12 +81,13 @@ class Board
     Board clonedBoard = new Board(this.pieces);
     return clonedBoard;
   }
-
+  
   /***********************************************************
    * Output method. Displays textual copy of board to stdout
    ***********************************************************/
   public void Output()
   {
+    print("\n");
     print("+");
     for(int column = 0; column < Board.BOARD_WIDTH * 3; column++)
     {
@@ -160,7 +163,7 @@ class Board
    * position (column, row)
    ***********************************************************/
   private void ApplyMove(int column, int row, Move move)
-  {     //<>//
+  {
     if(move instanceof StepMove)
     {
       // Move the piece to the target position
@@ -168,7 +171,7 @@ class Board
       // Mark the start-position as empty
       this.pieces[column][row] = Board.EMPTY;
 
-      if((this.pieces[move.targetColumn][move.targetRow] == Board.COMPUTER_MAN) && (move.targetRow == (Board.BOARD_HEIGHT -1)))
+      if((this.pieces[move.targetColumn][move.targetRow] == Board.COMPUTER_MAN) && (move.targetRow == (Board.BOARD_HEIGHT - 1)))
       {
         this.pieces[move.targetColumn][move.targetRow] = Board.COMPUTER_KING;
       }
@@ -196,7 +199,7 @@ class Board
         jumpMove = jumpMove.nextJumpMove;      
       } while(jumpMove != null);
 
-      if((this.pieces[finalColumn][finalRow] == Board.COMPUTER_MAN) && (finalRow == (Board.BOARD_HEIGHT -1)))
+      if((this.pieces[finalColumn][finalRow] == Board.COMPUTER_MAN) && (finalRow == (Board.BOARD_HEIGHT - 1)))
       {
         this.pieces[finalColumn][finalRow] = Board.COMPUTER_KING;
       }

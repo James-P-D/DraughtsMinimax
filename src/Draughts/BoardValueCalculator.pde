@@ -13,12 +13,12 @@ class BoardValueCalculator
    * Computer. Values will be multiplied by Scalar if they are
    * 'safe' (against a wall or proected by teammates)
    ***********************************************************/
-  static final int HUMAN_WINS = -1000000;
-  static final int HUMAN_MAN_SCORE = -100;
-  static final int HUMAN_KING_SCORE = -200;
   static final int COMPUTER_WINS = 1000000;
   static final int COMPUTER_MAN_SCORE = 100;
-  static final int COMPUTER_KING_SCORE = 200;
+  static final int COMPUTER_KING_SCORE = 150;
+  static final int HUMAN_WINS = (-COMPUTER_WINS);
+  static final int HUMAN_MAN_SCORE = -(COMPUTER_MAN_SCORE);
+  static final int HUMAN_KING_SCORE = (-COMPUTER_KING_SCORE);
   static final int SAFE_SCALAR = 2;
   
   /***********************************************************
@@ -41,25 +41,28 @@ class BoardValueCalculator
     {
       for(int row = 0; row < Board.BOARD_HEIGHT; row++)
       {
-        PossibleMovesCalculator possibleMovesCalculator = new PossibleMovesCalculator(board, column, row);
-        switch(board.pieces[column][row])
+        if(!board.IsEmpty(column, row))
         {
-          case Board.HUMAN_MAN :
-            this.value += IsSafe(board, column, row) ? HUMAN_MAN_SCORE * SAFE_SCALAR : HUMAN_MAN_SCORE;
-            totalPossibleHumanMoves += possibleMovesCalculator.Moves.size();
-            break;
-          case Board.HUMAN_KING :
-            this.value += IsSafe(board, column, row) ? HUMAN_KING_SCORE * SAFE_SCALAR : HUMAN_KING_SCORE;
-            totalPossibleHumanMoves += possibleMovesCalculator.Moves.size();
-            break;
-          case Board.COMPUTER_MAN :
-            this.value += IsSafe(board, column, row) ? COMPUTER_MAN_SCORE * SAFE_SCALAR : COMPUTER_MAN_SCORE;
-            totalPossibleComputerMoves += possibleMovesCalculator.Moves.size();
-            break;
-          case Board.COMPUTER_KING :
-            this.value += IsSafe(board, column, row) ? COMPUTER_KING_SCORE * SAFE_SCALAR : COMPUTER_KING_SCORE;
-            totalPossibleComputerMoves += possibleMovesCalculator.Moves.size();
-            break;
+          PossibleMovesCalculator possibleMovesCalculator = new PossibleMovesCalculator(board, column, row);
+          switch(board.pieces[column][row])
+          {
+            case Board.HUMAN_MAN :
+              this.value += IsSafe(board, column, row) ? HUMAN_MAN_SCORE * SAFE_SCALAR : HUMAN_MAN_SCORE;
+              totalPossibleHumanMoves += possibleMovesCalculator.Moves.size();
+              break;
+            case Board.HUMAN_KING :
+              this.value += IsSafe(board, column, row) ? HUMAN_KING_SCORE * SAFE_SCALAR : HUMAN_KING_SCORE;
+              totalPossibleHumanMoves += possibleMovesCalculator.Moves.size();
+              break;
+            case Board.COMPUTER_MAN :
+              this.value += IsSafe(board, column, row) ? COMPUTER_MAN_SCORE * SAFE_SCALAR : COMPUTER_MAN_SCORE;
+              totalPossibleComputerMoves += possibleMovesCalculator.Moves.size();
+              break;
+            case Board.COMPUTER_KING :
+              this.value += IsSafe(board, column, row) ? COMPUTER_KING_SCORE * SAFE_SCALAR : COMPUTER_KING_SCORE;
+              totalPossibleComputerMoves += possibleMovesCalculator.Moves.size();
+              break;
+          }
         }
       }
     }
@@ -73,14 +76,14 @@ class BoardValueCalculator
    * is safe (I.E. has a wall or pieces along two adjacent sides)
    ***********************************************************/
   private boolean IsSafe(Board board, int column, int row)
-  {  
+  {
     if((column == 0) || (column == Board.BOARD_WIDTH - 1) || // If piece is against either vertical side of board..
        (row == 0) || (row == Board.BOARD_HEIGHT - 1))        // ..or against either the top or bottom of board..
     { 
-      return true;                                     // ..then the piece is inherently safe
+      return true;                                           // ..then the piece is inherently safe
     }
     
-    // If we get here, then we know the piece is not next to a wall, so no need to check row/column +/-1
+    // If we get here, then we know the piece is not next to a wall, so no need to check row/column +/- 1
     // is out of bounds for array.
     
     // Here we check if a human piece (man or king) has two pieces strictly next to it that are also human.

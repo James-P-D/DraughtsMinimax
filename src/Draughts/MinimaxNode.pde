@@ -32,14 +32,7 @@ class MinimaxNode
     }
     else if(depth >= MAX_SEARCH_DEPTH) 
     {
-      if(humanPlayer)
-      {
-        this.score = boardValueCalculator.value;
-      }
-      else
-      {
-        this.score = boardValueCalculator.value;
-      }
+      this.score = boardValueCalculator.value;
     }
     else
     {
